@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta content="Compare ofertas e acompanhe preços no Hunter." name="description"/>
+  <title>
+   Hunter — encontre sua próxima boa compra
+  </title>
+  <link href="assets/css/ui.css?v=20261107-2" rel="stylesheet"/>
+  <script defer src="runtime-config.js"></script>
+  <script defer src="assets/js/api.js?v=20261107-2"></script>
+  <script defer="" src="assets/js/ui.js?v=20261107-2">
+  </script>
+  <script defer src="assets/js/pages/home.js?v=20261107-2"></script>
+ </head>
+ <body data-page="home">
+  <a class="skip-link" href="#main">
+   Ir para o conteúdo
+  </a>
+  <header class="site-header">
+   <nav aria-label="Navegação principal" class="site-nav">
+    <a aria-label="Hunter, início" class="brand" href="index.html">
+     <span aria-hidden="true" class="brand-mark">
+      H
+     </span>
+     hunter
+     <span class="brand-dot">
+      .
+     </span>
+    </a>
+    <button aria-controls="navLinks" aria-expanded="false" class="menu-toggle" id="menuToggle" type="button">
+     Menu
+     <span aria-hidden="true">
+      ☰
+     </span>
+    </button>
+    <div class="nav-links" id="navLinks">
+     <a href="index.html">
+      Início
+     </a>
+     <a href="buscar.html">
+      Buscar ofertas
+     </a>
+     <a href="alertas.html">
+      Meus alertas
+     </a>
+     <a href="feedback.html">
+      Feedback
+     </a>
+     <a href="configurar.html">
+      Minha conta
+     </a>
+     <a class="nav-login" href="login.html" id="loginNav">
+      Entrar / Criar conta
+     </a>
+     <button class="nav-logout" hidden="" id="logoutLink" type="button">
+      Sair
+     </button>
+    </div>
+   </nav>
+  </header>
+  <div aria-atomic="true" aria-live="polite" class="notifications" id="notifications">
+  </div>
+  <main class="site-main" id="main">
+   <section class="hero">
+    <div class="hero-copy">
+     <p class="eyebrow">
+      COMPRE COM MAIS CLAREZA
+     </p>
+     <h1>
+      O preço certo.
+      <br/>
+      <span>
+       A compra certa.
+      </span>
+     </h1>
+     <p class="hero-description">
+      Encontre ofertas, compare lojas e acompanhe seus preços favoritos em um só lugar.
+     </p>
+     <form class="hero-search" id="homeSearch">
+      <label class="sr-only" for="homeQuery">
+       Qual produto você procura?
+      </label>
+      <input id="homeQuery" maxlength="255" placeholder="Busque mouse, teclado, monitor..." required=""/>
+      <button class="button primary" type="submit">
+       Buscar ofertas
+       <span aria-hidden="true">
+        →
+       </span>
+      </button>
+     </form>
+     <p class="subtle">
+      Catálogo KaBuM! e Mercado Livre · Busca gratuita
+     </p>
+    </div>
+    <div aria-hidden="true" class="hero-visual">
+     <div class="orbit">
+     </div>
+     <div class="visual-card">
+      <span class="tag">
+       MAIS CONTROLE NA SUA COMPRA
+      </span>
+      <strong>
+       Compare.
+       <br/>
+       Escolha.
+       <br/>
+       Economize.
+      </strong>
+      <div class="visual-bars">
+       <i>
+       </i>
+       <i>
+       </i>
+       <i>
+       </i>
+       <i>
+       </i>
+       <i>
+       </i>
+      </div>
+      <span class="visual-caption">
+       Uma boa compra começa com informação.
+      </span>
+     </div>
+    </div>
+   </section>
+   <section class="section">
+    <div class="section-heading">
+     <div>
+      <p class="eyebrow">
+       ESCOLHA POR CATEGORIA
+      </p>
+      <h2>
+       O que você está procurando?
+      </h2>
+     </div>
+     <a class="text-link" href="buscar.html">
+      Explorar ofertas →
+     </a>
+    </div>
+    <div class="category-grid">
+     <a class="category-card" href="buscar.html?q=mouse">
+      <img alt="" loading="lazy" src="assets/imgfeature/mouse.png"/>
+      <span>
+       Mouses
+      </span>
+      <span aria-hidden="true">
+       ↗
+      </span>
+     </a>
+     <a class="category-card" href="buscar.html?q=teclado">
+      <img alt="" loading="lazy" src="assets/imgfeature/teclado.png"/>
+      <span>
+       Teclados
+      </span>
+      <span aria-hidden="true">
+       ↗
+      </span>
+     </a>
+     <a class="category-card" href="buscar.html?q=monitor">
+      <img alt="" loading="lazy" src="assets/imgfeature/monitor.png"/>
+      <span>
+       Monitores
+      </span>
+      <span aria-hidden="true">
+       ↗
+      </span>
+     </a>
+     <a class="category-card" href="buscar.html?q=pendrive">
+      <img alt="" loading="lazy" src="assets/imgfeature/pendrive.png"/>
+      <span>
+       Pendrives
+      </span>
+      <span aria-hidden="true">
+       ↗
+      </span>
+     </a>
+    </div>
+   </section>
+   <section class="section">
+    <div class="section-heading">
+     <div>
+      <p class="eyebrow">
+       SIMPLES DO INÍCIO AO FIM
+      </p>
+      <h2>
+       Decida com informação.
+      </h2>
+     </div>
+    </div>
+    <div class="three-grid">
+     <article class="feature">
+      <span class="step">
+       01
+      </span>
+      <h3>
+       Encontre seu produto
+      </h3>
+      <p>
+       Pesquise no catálogo e filtre por loja e faixa de preço.
+      </p>
+     </article>
+     <article class="feature">
+      <span class="step">
+       02
+      </span>
+      <h3>
+       Compare as ofertas
+      </h3>
+      <p>
+       Consulte os valores cadastrados e confira as condições na loja antes de comprar.
+      </p>
+     </article>
+     <article class="feature">
+      <span class="step">
+       03
+      </span>
+      <h3>
+       Acompanhe seu alvo
+      </h3>
+      <p>
+       Salve um preço desejado. Na página de alertas, veja se há ofertas no catálogo que atendem ao seu alvo.
+      </p>
+     </article>
+    </div>
+   </section>
+  </main>
+  <footer class="site-footer">
+   <a class="brand" href="index.html">
+    hunter
+    <span class="brand-dot">
+     .
+    </span>
+   </a>
+   <p>
+    Escolhas melhores. Compras mais conscientes.
+   </p>
+   <span>
+    © 2026 Hunter
+   </span>
+  </footer>
+  <dialog id="confirmDialog">
+   <form method="dialog">
+    <h2 id="confirmTitle">
+     Confirmar ação
+    </h2>
+    <p id="confirmText">
+    </p>
+    <div class="actions">
+     <button class="button secondary" value="cancel">
+      Cancelar
+     </button>
+     <button class="button danger" value="confirm">
+      Confirmar
+     </button>
+    </div>
+   </form>
+  </dialog>
+  <script defer="" src="https://vlibras.gov.br/app/vlibras-plugin.js">
+  </script>
+  <div class="enabled" vw="">
+   <div class="active" vw-access-button="">
+   </div>
+   <div vw-plugin-wrapper="">
+    <div class="vw-plugin-top-wrapper">
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

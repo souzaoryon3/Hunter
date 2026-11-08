@@ -1,0 +1,84 @@
+# Desenvolvimento independente: nunca combina com compose.yaml/simulation.
+name: hunter-dev
+x-runtime: &runtime
+  build: .
+  init: true
+  environment: &environment
+    HUNTER_ENV: local
+    DATABASE_URL: postgresql://hunter_dev:${DEV_DB_PASSWORD:?Execute scripts/dev.py configure}@postgres:5432/hunter_dev
+    RABBITMQ_URL: amqp://hunter_dev:${DEV_RABBIT_PASSWORD:?Execute scripts/dev.py configure}@rabbitmq:5672/hunter_dev
+    JWT_SECRET_KEY: ${DEV_JWT_SECRET:?Execute scripts/dev.py configure}
+    CORS_ORIGINS: http://localhost:${DEV_HTTP_PORT:-8088},http://127.0.0.1:${DEV_HTTP_PORT:-8088}
+    HUNTER_COLLECTION_ENABLED: '0'
+    HUNTER_QUEUE_PREFIX: hunter_dev
+    HUNTER_SCAN_SECONDS: '2'
+  depends_on:
+    bootstrap:
+      condition: service_completed_successfully
+    rabbitmq:
+      condition: service_healthy
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: hunter_dev
+      POSTGRES_PASSWORD: ${DEV_DB_PASSWORD:?Execute scripts/dev.py configure}
+      POSTGRES_DB: hunter_dev
+    volumes: [dev_postgres:/var/lib/postgresql/data]
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U hunter_dev -d hunter_dev]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+  rabbitmq:
+    image: rabbitmq:4.1-management
+    hostname: hunter-dev-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: hunter_dev
+      RABBITMQ_DEFAULT_PASS: ${DEV_RABBIT_PASSWORD:?Execute scripts/dev.py configure}
+      RABBITMQ_DEFAULT_VHOST: hunter_dev
+    volumes: [dev_rabbitmq:/var/lib/rabbitmq]
+    ports: ['127.0.0.1:${DEV_MANAGEMENT_PORT:-15688}:15672']
+    healthcheck:
+      test: [CMD, rabbitmq-diagnostics, -q, ping]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+  bootstrap:
+    build: .
+    environment:
+      HUNTER_ENV: local
+      MIGRATION_DATABASE_URL: postgresql://hunter_dev:${DEV_DB_PASSWORD:?Execute scripts/dev.py configure}@postgres:5432/hunter_dev
+    command: [python, -B, -m, ops.dev_bootstrap]
+    depends_on:
+      postgres:
+        condition: service_healthy
+  api:
+    <<: *runtime
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/ready',timeout=3)"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+  worker:
+    <<: *runtime
+    command: [python, -B, -m, messaging.worker]
+  scheduler:
+    <<: *runtime
+    command: [python, -B, -m, messaging.scheduler]
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports: ['127.0.0.1:${DEV_HTTP_PORT:-8088}:8080']
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD, wget, -q, --spider, http://127.0.0.1:8080/index.html]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+volumes:
+  dev_postgres:
+  dev_rabbitmq:

@@ -1,0 +1,16 @@
+{
+  "campaign": "hunter-expansion-50",
+  "target_new_products": 50,
+  "started_at": "2026-11-08T11:20:05.127288+00:00",
+  "baseline_product_ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "allowed_offers": [],
+  "state": "awaiting_verified_sources",
+  "completed_new_products": 0
+}

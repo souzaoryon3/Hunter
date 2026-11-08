@@ -1,0 +1,44 @@
+# PREPARACAO: nao iniciar sobre as portas/processos locais sem handoff planejado.
+# docker compose -f compose.yaml -f compose.app.yaml --profile app config
+x-runtime: &runtime
+  build: .
+  profiles: [app]
+  init: true
+  restart: unless-stopped
+  environment: &environment
+    HUNTER_ENV: ${HUNTER_ENV:-production}
+    DATABASE_URL: ${DATABASE_URL:?Configure funcao runtime e host acessivel pelo container}
+    JWT_SECRET_KEY: ${JWT_SECRET_KEY:?Configure segredo externo}
+    RABBITMQ_URL: ${RABBITMQ_URL:?Configure broker acessivel pelo container}
+    CORS_ORIGINS: ${CORS_ORIGINS:?Configure origem publica explicita}
+services:
+  api:
+    <<: *runtime
+    expose: [8000]
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/ready',timeout=3)"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+  worker:
+    <<: *runtime
+    command: [python, -B, -m, messaging.worker]
+  scheduler:
+    <<: *runtime
+    command: [python, -B, -m, messaging.scheduler]
+    environment:
+      <<: *environment
+      HUNTER_SCAN_SECONDS: '10'
+      HUNTER_COLLECTION_ENABLED: ${HUNTER_COLLECTION_ENABLED:-0}
+    # Manter uma replica; o lock PostgreSQL e defesa adicional, nao standby.
+    deploy:
+      replicas: 1
+  frontend:
+    profiles: [app]
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports: ['127.0.0.1:8080:8080']
+    depends_on:
+      api:
+        condition: service_healthy

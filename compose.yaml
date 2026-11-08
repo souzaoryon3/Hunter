@@ -1,0 +1,61 @@
+name: hunter-queue
+services:
+  rabbitmq:
+    image: rabbitmq:4.1-management
+    hostname: hunter-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${HUNTER_RABBIT_USER:?Configure o usuário no ambiente}
+      RABBITMQ_DEFAULT_PASS: ${HUNTER_RABBIT_PASSWORD:?Configure a senha no ambiente}
+      RABBITMQ_DEFAULT_VHOST: hunter
+    ports:
+      - "127.0.0.1:5672:5672"
+      - "127.0.0.1:15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    restart: unless-stopped
+
+  # Somente com --profile test. Não monta dados nem usa a porta do banco real.
+  postgres-test:
+    image: postgres:16-alpine
+    profiles: [test]
+    environment:
+      POSTGRES_USER: hunter_test
+      POSTGRES_DB: hunter_test
+      POSTGRES_PASSWORD: ${HUNTER_TEST_DB_PASSWORD:?Configure a senha de teste no ambiente}
+    ports:
+      - "127.0.0.1:55432:5432"
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hunter_test -d hunter_test"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  rabbitmq-test:
+    image: rabbitmq:4.1-management
+    hostname: hunter-rabbitmq-test
+    profiles: [test]
+    environment:
+      RABBITMQ_DEFAULT_USER: ${HUNTER_RABBIT_USER:?Configure o usuário no ambiente}
+      RABBITMQ_DEFAULT_PASS: ${HUNTER_RABBIT_PASSWORD:?Configure a senha no ambiente}
+      RABBITMQ_DEFAULT_VHOST: hunter_test
+    ports:
+      - "127.0.0.1:5673:5672"
+      - "127.0.0.1:15673:15672"
+    volumes:
+      - rabbitmq_test_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 18
+volumes:
+  rabbitmq_data:
+  rabbitmq_test_data:
+  postgres_test_data:

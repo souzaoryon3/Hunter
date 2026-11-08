@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta content="Compare ofertas e acompanhe preços no Hunter." name="description"/>
+  <title>
+   Sua opinião — Hunter
+  </title>
+  <link href="assets/css/ui.css?v=20261107-2" rel="stylesheet"/>
+  <script defer src="runtime-config.js"></script>
+  <script defer src="assets/js/api.js?v=20261107-2"></script>
+  <script defer="" src="assets/js/ui.js?v=20261107-2">
+  </script>
+  <script defer src="assets/js/pages/feedback.js?v=20261107-2"></script>
+ </head>
+ <body data-page="feedback">
+  <a class="skip-link" href="#main">
+   Ir para o conteúdo
+  </a>
+  <header class="site-header">
+   <nav aria-label="Navegação principal" class="site-nav">
+    <a aria-label="Hunter, início" class="brand" href="index.html">
+     <span aria-hidden="true" class="brand-mark">
+      H
+     </span>
+     hunter
+     <span class="brand-dot">
+      .
+     </span>
+    </a>
+    <button aria-controls="navLinks" aria-expanded="false" class="menu-toggle" id="menuToggle" type="button">
+     Menu
+     <span aria-hidden="true">
+      ☰
+     </span>
+    </button>
+    <div class="nav-links" id="navLinks">
+     <a href="index.html">
+      Início
+     </a>
+     <a href="buscar.html">
+      Buscar ofertas
+     </a>
+     <a href="alertas.html">
+      Meus alertas
+     </a>
+     <a href="feedback.html">
+      Feedback
+     </a>
+     <a href="configurar.html">
+      Minha conta
+     </a>
+     <a class="nav-login" href="login.html" id="loginNav">
+      Entrar / Criar conta
+     </a>
+     <button class="nav-logout" hidden="" id="logoutLink" type="button">
+      Sair
+     </button>
+    </div>
+   </nav>
+  </header>
+  <div aria-atomic="true" aria-live="polite" class="notifications" id="notifications">
+  </div>
+  <main class="site-main" id="main">
+   <div class="page-heading">
+    <p class="eyebrow">
+     CONSTRUÍMOS COM VOCÊ
+    </p>
+    <h1>
+     Sua opinião importa.
+    </h1>
+    <p>
+     Conte o que funcionou bem e o que pode ficar melhor.
+    </p>
+   </div>
+   <div id="authGate">
+   </div>
+   <div hidden="" id="protectedContent">
+    <div class="manage-layout">
+     <section class="panel">
+      <h2 id="feedbackFormTitle">
+       Enviar uma mensagem
+      </h2>
+      <p class="subtle">
+       Sua mensagem será vinculada à sua conta.
+      </p>
+      <form id="feedbackForm">
+       <label for="feedback">
+        Mensagem
+       </label>
+       <textarea aria-describedby="feedbackHelp" id="feedback" maxlength="5000" placeholder="Compartilhe uma sugestão, dúvida ou problema..." required="" rows="7"></textarea>
+       <div class="counter" id="feedbackHelp">
+        <span id="messageCount">
+         0
+        </span>
+        / 5.000 caracteres
+       </div>
+       <div class="actions">
+        <button class="button primary" id="saveFeedback" type="submit">
+         Enviar mensagem
+        </button>
+        <button class="button secondary" hidden="" id="cancelFeedback" type="button">
+         Cancelar edição
+        </button>
+       </div>
+      </form>
+     </section>
+     <section>
+      <div class="section-heading">
+       <h2>
+        Minhas mensagens
+       </h2>
+       <button class="button secondary small" id="refreshFeedback" type="button">
+        Atualizar
+       </button>
+      </div>
+      <div class="list-stack" id="feedbackList">
+      </div>
+     </section>
+    </div>
+   </div>
+  </main>
+  <footer class="site-footer">
+   <a class="brand" href="index.html">
+    hunter
+    <span class="brand-dot">
+     .
+    </span>
+   </a>
+   <p>
+    Escolhas melhores. Compras mais conscientes.
+   </p>
+   <span>
+    © 2026 Hunter
+   </span>
+  </footer>
+  <dialog id="confirmDialog">
+   <form method="dialog">
+    <h2 id="confirmTitle">
+     Confirmar ação
+    </h2>
+    <p id="confirmText">
+    </p>
+    <div class="actions">
+     <button class="button secondary" value="cancel">
+      Cancelar
+     </button>
+     <button class="button danger" value="confirm">
+      Confirmar
+     </button>
+    </div>
+   </form>
+  </dialog>
+  <script defer="" src="https://vlibras.gov.br/app/vlibras-plugin.js">
+  </script>
+  <div class="enabled" vw="">
+   <div class="active" vw-access-button="">
+   </div>
+   <div vw-plugin-wrapper="">
+    <div class="vw-plugin-top-wrapper">
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta content="Compare ofertas e acompanhe preços no Hunter." name="description"/>
+  <title>
+   Entrar ou criar conta — Hunter
+  </title>
+  <link href="assets/css/ui.css?v=20261107-2" rel="stylesheet"/>
+  <script defer src="runtime-config.js"></script>
+  <script defer src="assets/js/api.js?v=20261107-2"></script>
+  <script defer="" src="assets/js/ui.js?v=20261107-2">
+  </script>
+  <script defer src="assets/js/pages/login.js?v=20261107-2"></script>
+ </head>
+ <body data-page="login">
+  <a class="skip-link" href="#main">
+   Ir para o conteúdo
+  </a>
+  <header class="site-header">
+   <nav aria-label="Navegação principal" class="site-nav">
+    <a aria-label="Hunter, início" class="brand" href="index.html">
+     <span aria-hidden="true" class="brand-mark">
+      H
+     </span>
+     hunter
+     <span class="brand-dot">
+      .
+     </span>
+    </a>
+    <button aria-controls="navLinks" aria-expanded="false" class="menu-toggle" id="menuToggle" type="button">
+     Menu
+     <span aria-hidden="true">
+      ☰
+     </span>
+    </button>
+    <div class="nav-links" id="navLinks">
+     <a href="index.html">
+      Início
+     </a>
+     <a href="buscar.html">
+      Buscar ofertas
+     </a>
+     <a href="alertas.html">
+      Meus alertas
+     </a>
+     <a href="feedback.html">
+      Feedback
+     </a>
+     <a href="configurar.html">
+      Minha conta
+     </a>
+     <a class="nav-login" href="login.html" id="loginNav">
+      Entrar / Criar conta
+     </a>
+     <button class="nav-logout" hidden="" id="logoutLink" type="button">
+      Sair
+     </button>
+    </div>
+   </nav>
+  </header>
+  <div aria-atomic="true" aria-live="polite" class="notifications" id="notifications">
+  </div>
+  <main class="site-main" id="main">
+   <div class="page-heading centered">
+    <p class="eyebrow">
+     BOAS COMPRAS COMEÇAM AQUI
+    </p>
+    <h1>
+     Bem-vindo ao Hunter.
+    </h1>
+    <p>
+     Entre para acompanhar produtos e salvar seus preços desejados.
+    </p>
+   </div>
+   <div class="auth-grid">
+    <section class="panel">
+     <span class="tag">
+      JÁ TENHO CONTA
+     </span>
+     <h2>
+      Que bom ter você de volta.
+     </h2>
+     <form id="loginForm">
+      <label for="loginEmail">
+       E-mail
+      </label>
+      <input autocomplete="username" id="loginEmail" required="" type="email"/>
+      <label for="loginSenha">
+       Senha
+      </label>
+      <div class="password-field">
+       <input autocomplete="current-password" id="loginSenha" required="" type="password"/>
+       <button aria-label="Mostrar senha" class="password-toggle" data-password="loginSenha" type="button">
+        Mostrar
+       </button>
+      </div>
+      <button class="button primary full" type="submit">
+       Entrar na minha conta
+      </button>
+     </form>
+    </section>
+    <section class="panel">
+     <span class="tag">
+      PRIMEIRA VEZ POR AQUI?
+     </span>
+     <h2>
+      Crie sua conta gratuita.
+     </h2>
+     <form id="cadastroForm">
+      <label for="cadNome">
+       Nome
+      </label>
+      <input autocomplete="name" id="cadNome" maxlength="255" minlength="2" required=""/>
+      <label for="cadEmail">
+       E-mail
+      </label>
+      <input autocomplete="email" id="cadEmail" maxlength="255" required="" type="email"/>
+      <label for="cadSenha">
+       Senha
+      </label>
+      <div class="password-field">
+       <input autocomplete="new-password" id="cadSenha" maxlength="72" minlength="8" required="" type="password"/>
+       <button aria-label="Mostrar senha" class="password-toggle" data-password="cadSenha" type="button">
+        Mostrar
+       </button>
+      </div>
+      <p class="hint">
+       Use pelo menos 8 caracteres. Evite senhas usadas em outros serviços.
+      </p>
+      <button class="button primary full" type="submit">
+       Criar conta
+      </button>
+     </form>
+    </section>
+   </div>
+   <p class="centered subtle">
+    Você também pode
+    <a href="buscar.html">
+     explorar ofertas sem criar uma conta
+    </a>
+    .
+   </p>
+  </main>
+  <footer class="site-footer">
+   <a class="brand" href="index.html">
+    hunter
+    <span class="brand-dot">
+     .
+    </span>
+   </a>
+   <p>
+    Escolhas melhores. Compras mais conscientes.
+   </p>
+   <span>
+    © 2026 Hunter
+   </span>
+  </footer>
+  <dialog id="confirmDialog">
+   <form method="dialog">
+    <h2 id="confirmTitle">
+     Confirmar ação
+    </h2>
+    <p id="confirmText">
+    </p>
+    <div class="actions">
+     <button class="button secondary" value="cancel">
+      Cancelar
+     </button>
+     <button class="button danger" value="confirm">
+      Confirmar
+     </button>
+    </div>
+   </form>
+  </dialog>
+  <script defer="" src="https://vlibras.gov.br/app/vlibras-plugin.js">
+  </script>
+  <div class="enabled" vw="">
+   <div class="active" vw-access-button="">
+   </div>
+   <div vw-plugin-wrapper="">
+    <div class="vw-plugin-top-wrapper">
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

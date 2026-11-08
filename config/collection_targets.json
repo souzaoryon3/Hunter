@@ -1,0 +1,12 @@
+{
+  "targets": [
+    {"store": "KaBuM!", "url": "https://www.kabum.com.br/produto/112948/mouse-gamer-logitech-g203-lightsync-rgb-efeito-de-ondas-de-cores-6-botoes-programaveis-e-ate-8-000-dpi-preto-910-005793", "enabled": true},
+    {"store": "KaBuM!", "url": "https://www.kabum.com.br/produto/98244/mouse-gamer-logitech-g502-hero-com-rgb-lightsync-ajustes-de-peso-11-botoes-programaveis-sensor-hero-25k-910-005550", "enabled": true},
+    {"store": "KaBuM!", "url": "https://www.kabum.com.br/produto/621161/ssd-kingston-nv3-500-gb-m-2-2280-pcie-4-0-x4-nvme-leitura-5000-mb-s-gravacao-3000-mb-s-azul-snv3s-500g", "enabled": true},
+    {"store": "KaBuM!", "url": "https://www.kabum.com.br/produto/955912/monitor-lg-gamer-24-100hz-5ms-full-hd-24ms500-b", "enabled": true},
+    {"store": "KaBuM!", "url": "https://www.kabum.com.br/produto/356701/teclado-mecanico-sem-fio-logitech-mx-mechanical-iluminacao-switch-tactile-quiet-bluetooth-usb-preto-920-010760", "enabled": true},
+    {"store": "KaBuM!", "url": "https://www.kabum.com.br/produto/471957/teclado-mecanico-gamer-kbm-gaming-tg700-preto-65-e-abnt2-rgb-switch-gateron-red-kgtg700ptvr", "enabled": true},
+    {"store": "Mercado Livre", "url": "https://lista.mercadolivre.com.br/teclado", "enabled": false, "reason": "Redirecionamento para account-verification; requer acesso oficial autorizado."},
+    {"store": "Pichau", "url": "https://www.pichau.com.br/perifericos/teclado", "enabled": false, "reason": "HTTP 403. Nao tentar contornar o bloqueio."}
+  ]
+}

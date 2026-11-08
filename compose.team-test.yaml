@@ -1,0 +1,59 @@
+# Rede fechada, portas nao publicadas, banco novo; nao reutiliza os testes do operador.
+name: hunter-team-test
+services:
+  postgres:
+    image: postgres:16-alpine
+    command: [postgres, -p, '55432']
+    environment:
+      POSTGRES_USER: hunter_test
+      POSTGRES_DB: hunter_test
+      POSTGRES_PASSWORD: ${TEAM_TEST_DB_PASSWORD:?Configure testes}
+    volumes: [team_test_postgres:/var/lib/postgresql/data]
+    healthcheck:
+      test: [CMD, pg_isready, -p, '55432', -U, hunter_test, -d, hunter_test]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+  rabbitmq:
+    image: rabbitmq:4.1-management
+    network_mode: service:postgres
+    environment:
+      RABBITMQ_NODE_PORT: '5673'
+      RABBITMQ_DEFAULT_USER: hunter_test
+      RABBITMQ_DEFAULT_PASS: ${TEAM_TEST_RABBIT_PASSWORD:?Configure testes}
+      RABBITMQ_DEFAULT_VHOST: hunter_test
+    volumes: [team_test_rabbitmq:/var/lib/rabbitmq]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD, rabbitmq-diagnostics, -q, ping]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+  runner:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+      additional_contexts:
+        test_sources: ./tests
+    network_mode: service:postgres
+    environment:
+      HUNTER_ENV: test
+      HUNTER_QUEUE_TESTS: '1'
+      HUNTER_COLLECTION_ENABLED: '0'
+      HUNTER_QUEUE_PREFIX: hunter_test_team
+      HUNTER_SCAN_SECONDS: '2'
+      HUNTER_RETRY_SECONDS: '1'
+      HUNTER_BROWSER_CHANNEL: chromium
+      JWT_SECRET_KEY: ${TEAM_TEST_JWT_SECRET:?Configure testes}
+      DATABASE_URL: postgresql://hunter_test:${TEAM_TEST_DB_PASSWORD:?Configure testes}@127.0.0.1:55432/hunter_test
+      MIGRATION_DATABASE_URL: postgresql://hunter_test:${TEAM_TEST_DB_PASSWORD:?Configure testes}@127.0.0.1:55432/hunter_test
+      HUNTER_TEST_DATABASE_URL: postgresql://hunter_test:${TEAM_TEST_DB_PASSWORD:?Configure testes}@127.0.0.1:55432/hunter_test
+      RABBITMQ_URL: amqp://hunter_test:${TEAM_TEST_RABBIT_PASSWORD:?Configure testes}@127.0.0.1:5673/hunter_test
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+volumes:
+  team_test_postgres:
+  team_test_rabbitmq:

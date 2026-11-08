@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta content="Compare ofertas e acompanhe preços no Hunter." name="description"/>
+  <title>
+   Minha conta — Hunter
+  </title>
+  <link href="assets/css/ui.css?v=20261107-2" rel="stylesheet"/>
+  <script defer src="runtime-config.js"></script>
+  <script defer src="assets/js/api.js?v=20261107-2"></script>
+  <script defer="" src="assets/js/ui.js?v=20261107-2">
+  </script>
+  <script defer src="assets/js/pages/profile.js?v=20261107-2"></script>
+ </head>
+ <body data-page="profile">
+  <a class="skip-link" href="#main">
+   Ir para o conteúdo
+  </a>
+  <header class="site-header">
+   <nav aria-label="Navegação principal" class="site-nav">
+    <a aria-label="Hunter, início" class="brand" href="index.html">
+     <span aria-hidden="true" class="brand-mark">
+      H
+     </span>
+     hunter
+     <span class="brand-dot">
+      .
+     </span>
+    </a>
+    <button aria-controls="navLinks" aria-expanded="false" class="menu-toggle" id="menuToggle" type="button">
+     Menu
+     <span aria-hidden="true">
+      ☰
+     </span>
+    </button>
+    <div class="nav-links" id="navLinks">
+     <a href="index.html">
+      Início
+     </a>
+     <a href="buscar.html">
+      Buscar ofertas
+     </a>
+     <a href="alertas.html">
+      Meus alertas
+     </a>
+     <a href="feedback.html">
+      Feedback
+     </a>
+     <a href="configurar.html">
+      Minha conta
+     </a>
+     <a class="nav-login" href="login.html" id="loginNav">
+      Entrar / Criar conta
+     </a>
+     <button class="nav-logout" hidden="" id="logoutLink" type="button">
+      Sair
+     </button>
+    </div>
+   </nav>
+  </header>
+  <div aria-atomic="true" aria-live="polite" class="notifications" id="notifications">
+  </div>
+  <main class="site-main" id="main">
+   <div class="page-heading">
+    <p class="eyebrow">
+     DO SEU JEITO
+    </p>
+    <h1>
+     Minha conta
+    </h1>
+    <p>
+     Gerencie seus dados e mantenha seu acesso atualizado.
+    </p>
+   </div>
+   <div id="authGate">
+   </div>
+   <div hidden="" id="protectedContent">
+    <div class="manage-layout">
+     <section class="panel">
+      <h2>
+       Dados pessoais
+      </h2>
+      <p class="subtle">
+       Seu cadastro atual, pronto para editar.
+      </p>
+      <form id="updateUserForm">
+       <label for="updateNome">
+        Nome
+       </label>
+       <input autocomplete="name" id="updateNome" maxlength="255" minlength="2" required=""/>
+       <label for="updateEmail">
+        E-mail
+       </label>
+       <input autocomplete="email" id="updateEmail" maxlength="255" required="" type="email"/>
+       <fieldset>
+        <legend>
+         Segurança
+        </legend>
+        <label for="updateSenha">
+         Nova senha
+         <span class="subtle">
+          (opcional)
+         </span>
+        </label>
+        <input aria-describedby="passwordHelp" autocomplete="new-password" id="updateSenha" maxlength="72" minlength="8" type="password"/>
+        <p class="hint" id="passwordHelp">
+         Use pelo menos 8 caracteres. Deixe em branco para manter sua senha.
+        </p>
+        <label for="currentPassword">
+         Senha atual
+        </label>
+        <input autocomplete="current-password" id="currentPassword" type="password"/>
+        <p class="hint">
+         Necessária apenas para alterar o e-mail ou a senha.
+        </p>
+       </fieldset>
+       <button class="button primary" type="submit">
+        Salvar alterações
+       </button>
+      </form>
+     </section>
+     <section class="panel danger-panel">
+      <span class="tag">
+       GERENCIAMENTO DA CONTA
+      </span>
+      <h2>
+       Excluir conta
+      </h2>
+      <p>
+       Esta ação remove permanentemente sua conta, seus alertas e suas mensagens de feedback.
+      </p>
+      <p class="hint">
+       Você precisará confirmar antes de continuar.
+      </p>
+      <button class="button danger" id="deleteUserBtn" type="button">
+       Excluir minha conta
+      </button>
+     </section>
+    </div>
+   </div>
+  </main>
+  <footer class="site-footer">
+   <a class="brand" href="index.html">
+    hunter
+    <span class="brand-dot">
+     .
+    </span>
+   </a>
+   <p>
+    Escolhas melhores. Compras mais conscientes.
+   </p>
+   <span>
+    © 2026 Hunter
+   </span>
+  </footer>
+  <dialog id="confirmDialog">
+   <form method="dialog">
+    <h2 id="confirmTitle">
+     Confirmar ação
+    </h2>
+    <p id="confirmText">
+    </p>
+    <div class="actions">
+     <button class="button secondary" value="cancel">
+      Cancelar
+     </button>
+     <button class="button danger" value="confirm">
+      Confirmar
+     </button>
+    </div>
+   </form>
+  </dialog>
+  <script defer="" src="https://vlibras.gov.br/app/vlibras-plugin.js">
+  </script>
+  <div class="enabled" vw="">
+   <div class="active" vw-access-button="">
+   </div>
+   <div vw-plugin-wrapper="">
+    <div class="vw-plugin-top-wrapper">
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

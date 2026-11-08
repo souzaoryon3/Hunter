@@ -1,0 +1,79 @@
+{
+  "capturado_em": "2026-10-06T01:23:57+00:00",
+  "fonte_coleta": "captura_publica",
+  "observacao": "Carga inicial obtida do conteúdo público consultável da categoria de teclados. O acesso HTTP direto foi bloqueado; a ferramenta de consulta pode apresentar conteúdo em cache. Data de consulta, não atualização em tempo real. Confirme os valores na loja.",
+  "produtos": [
+    {
+      "nome": "Teclado Gamer Redragon Shiva 87, RGB, Membrana, TKL ABNT2, USB, Preto, K516-RGB",
+      "link": "https://www.pichau.com.br/teclado-gamer-redragon-shiva-87-rgb-membrana-tkl-abnt2-usb-preto-k516-rgb",
+      "preco": "119.99",
+      "preco_cartao": "141.16",
+      "categoria": "Teclado",
+      "pagamento": "Pix",
+      "frete_gratis": null,
+      "frete_observacao": "Frete calculado na loja conforme CEP.",
+      "fonte_coleta": "captura_publica",
+      "fonte_url": "https://www.pichau.com.br/perifericos/teclado"
+    },
+    {
+      "nome": "Teclado Magnetico Pcyes Gamma Black Vulcan, RGB, Switch Rapid Trigger, Preto, PMGMBV-317930",
+      "link": "https://www.pichau.com.br/teclado-magnetico-pcyes-gamma-black-vulcan-rgb-switch-rapid-trigger-preto-pmgmbv-317930",
+      "preco": "269.99",
+      "preco_cartao": "317.64",
+      "categoria": "Teclado",
+      "pagamento": "Pix",
+      "frete_gratis": null,
+      "frete_observacao": "Frete grátis: Sul e Sudeste; confirme regras e CEP na loja.",
+      "fonte_coleta": "captura_publica",
+      "fonte_url": "https://www.pichau.com.br/perifericos/teclado"
+    },
+    {
+      "nome": "Teclado Magnetico Pcyes Gamma White Ghost, RGB, Switch Rapid Trigger, Branco, PMGMWG-317933",
+      "link": "https://www.pichau.com.br/teclado-magnetico-pcyes-gamma-white-ghost-rgb-switch-rapid-trigger-branco-pmgmwg-317933",
+      "preco": "269.99",
+      "preco_cartao": "317.64",
+      "categoria": "Teclado",
+      "pagamento": "Pix",
+      "frete_gratis": null,
+      "frete_observacao": "Frete grátis: Sul e Sudeste; confirme regras e CEP na loja.",
+      "fonte_coleta": "captura_publica",
+      "fonte_url": "https://www.pichau.com.br/perifericos/teclado"
+    },
+    {
+      "nome": "Teclado Gamer Redragon Shiva 61, 60%, RGB, ABNT2, Preto, K522-RGB-PT",
+      "link": "https://www.pichau.com.br/teclado-gamer-redragon-shiva-61-60-rgb-abnt2-preto-k522-rgb-pt",
+      "preco": "119.99",
+      "preco_cartao": "141.16",
+      "categoria": "Teclado",
+      "pagamento": "Pix",
+      "frete_gratis": null,
+      "frete_observacao": "Frete calculado na loja conforme CEP.",
+      "fonte_coleta": "captura_publica",
+      "fonte_url": "https://www.pichau.com.br/perifericos/teclado"
+    },
+    {
+      "nome": "Teclado Mecanico Logitech G G512 X, 98%, Switch Dual Swap, Branco, 920-013996",
+      "link": "https://www.pichau.com.br/teclado-mecanico-logitech-g-g512-x-98-switch-dual-swap-branco-920-013996",
+      "preco": "1,429.99",
+      "preco_cartao": "1,682.34",
+      "categoria": "Teclado",
+      "pagamento": "Pix",
+      "frete_gratis": null,
+      "frete_observacao": "Frete grátis: Sul e Sudeste; confirme regras e CEP na loja.",
+      "fonte_coleta": "captura_publica",
+      "fonte_url": "https://www.pichau.com.br/perifericos/teclado"
+    },
+    {
+      "nome": "Teclado Mecanico Logitech G G512 X, 98%, Switch Dual Swap, Preto, 920-013972",
+      "link": "https://www.pichau.com.br/teclado-mecanico-logitech-g-g512-x-98-switch-dual-swap-preto-920-013972",
+      "preco": "1,429.99",
+      "preco_cartao": "1,682.34",
+      "categoria": "Teclado",
+      "pagamento": "Pix",
+      "frete_gratis": null,
+      "frete_observacao": "Frete grátis: Sul e Sudeste; confirme regras e CEP na loja.",
+      "fonte_coleta": "captura_publica",
+      "fonte_url": "https://www.pichau.com.br/perifericos/teclado"
+    }
+  ]
+}

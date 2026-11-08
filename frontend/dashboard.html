@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta content="Compare ofertas e acompanhe preços no Hunter." name="description"/>
+  <title>
+   Análises de preços — Hunter
+  </title>
+  <link href="assets/css/ui.css?v=20261107-2" rel="stylesheet"/>
+  <script defer src="runtime-config.js"></script>
+  <script defer src="assets/js/api.js?v=20261107-2"></script>
+  <script defer="" src="assets/js/ui.js?v=20261107-2">
+  </script>
+ <script defer src="assets/js/dashboard.js?v=20261107-2"></script>
+ </head>
+ <body data-page="analytics">
+  <a class="skip-link" href="#main">
+   Ir para o conteúdo
+  </a>
+  <header class="site-header">
+   <nav aria-label="Navegação principal" class="site-nav">
+    <a aria-label="Hunter, início" class="brand" href="index.html">
+     <span aria-hidden="true" class="brand-mark">
+      H
+     </span>
+     hunter
+     <span class="brand-dot">
+      .
+     </span>
+    </a>
+    <button aria-controls="navLinks" aria-expanded="false" class="menu-toggle" id="menuToggle" type="button">
+     Menu
+     <span aria-hidden="true">
+      ☰
+     </span>
+    </button>
+    <div class="nav-links" id="navLinks">
+     <a href="index.html">
+      Início
+     </a>
+     <a href="buscar.html">
+      Buscar ofertas
+     </a>
+     <a href="alertas.html">
+      Meus alertas
+     </a>
+     <a href="feedback.html">
+      Feedback
+     </a>
+     <a href="configurar.html">
+      Minha conta
+     </a>
+     <a class="nav-login" href="login.html" id="loginNav">
+      Entrar / Criar conta
+     </a>
+     <button class="nav-logout" hidden="" id="logoutLink" type="button">
+      Sair
+     </button>
+    </div>
+   </nav>
+  </header>
+  <div aria-atomic="true" aria-live="polite" class="notifications" id="notifications">
+  </div>
+  <main class="site-main analytics-main" id="main">
+ <div class="page-heading"><p class="eyebrow">DADOS QUE AJUDAM A ESCOLHER</p>
+ <h1>O preço conta uma história.</h1><p>Explore observações, identifique quedas e entenda os limites dos dados disponíveis.</p>
+ <span class="tag" id="sourceBadge">Dados reais • histórico observado</span><p class="hint" id="sourceNote"></p></div>
+ <form class="panel analytics-filters" id="analysisForm">
+  <label>Origem<select id="dataOrigin"><option value="real">Histórico real</option><option value="demo">Demonstração sintética</option></select></label>
+  <label>Período<select id="analysisDays"><option value="7">Últimos 7 dias</option><option value="30">Últimos 30 dias</option><option value="90" selected>Últimos 90 dias</option><option value="365">Últimos 365 dias</option></select></label>
+  <label>Grupos K-Means<select id="clusterCount"><option>2</option><option selected>3</option><option>4</option><option>5</option></select></label>
+  <button class="button primary" id="refreshAnalysis" type="submit">Atualizar análises</button>
+ </form>
+ <p class="hint analytics-status" id="dashboardState" role="status" aria-live="polite">Carregando…</p>
+ <div class="panel" id="dashboardError" role="alert" hidden><p id="dashboardErrorText"></p><button class="button secondary" id="retryAnalysis" type="button">Tentar novamente</button></div>
+ <div id="dashboardContent" hidden>
+  <div class="analytics-metrics">
+   <article class="panel"><span>Produtos observados</span><strong id="produtosMetric">0</strong></article>
+   <article class="panel"><span>Observações no período</span><strong id="observacoesMetric">0</strong></article>
+   <article class="panel"><span>Quedas recentes ≥ 5%</span><strong id="quedasMetric">0</strong></article>
+   <article class="panel"><span>Sinais de oportunidade</span><strong id="oportunidadesMetric">0</strong></article>
+  </div>
+  <p class="hint" id="analysisNote"></p>
+  <div class="panel" id="emptyAnalysis" hidden><h2>A história ainda está começando</h2><p>Não há observações válidas neste período. Experimente outro período ou a demonstração sintética, separada do catálogo real.</p></div>
+  <div id="analysisPanels">
+   <div class="analytics-layout">
+    <section class="panel"><h2>Trajetória do preço</h2><label>Produto<select id="productSelect"></select></label>
+     <div class="analytics-chart" id="priceChart"></div><p class="hint" id="historyNote"></p>
+     <details><summary>Ver observações em tabela</summary><div class="analytics-table"><table><caption>Histórico do produto selecionado</caption><thead><tr><th>Coleta</th><th>Preço</th><th>Média móvel (3)</th></tr></thead><tbody id="historyBody"></tbody></table></div></details>
+    </section>
+    <section class="panel"><h2>Oportunidades observadas</h2><p class="hint">Queda ≥ 5%, preço ≥ 5% abaixo da média anterior e histórico em pelo menos dois dias. Última coleta e comparação em até 7 dias.</p><div id="opportunityList"></div></section>
+   </div>
+   <section class="panel analytics-section"><h2>Estatísticas por produto</h2><p class="hint">Variação: primeira versus última observação do período. Uma observação não permite comparação temporal.</p>
+    <div class="analytics-table"><table><caption>Preços observados por oferta e loja</caption><thead><tr><th>Produto</th><th>Loja</th><th>Observações</th><th>Atual</th><th>Médio</th><th>Mínimo</th><th>Máximo</th><th>Variação</th></tr></thead><tbody id="statsBody"></tbody></table></div>
+   </section>
+  </div>
+  <section class="panel analytics-section"><h2>Perfis de comportamento</h2><p class="hint">K-Means com características normalizadas. Grupos exploratórios; não comparam SKUs equivalentes nem preveem preços.</p>
+   <p id="clusterNote" role="status"></p><div class="analytics-chart" id="clusterChart"></div><div id="clusterGroups"></div>
+  </section>
+ </div>
+ <p class="hint analytics-section">Amostras pequenas e preços antigos limitam as conclusões. O dashboard não altera preços, alertas ou o catálogo. <a href="buscar.html">Voltar à busca de ofertas</a></p>
+</main>
+  <footer class="site-footer">
+   <a class="brand" href="index.html">
+    hunter
+    <span class="brand-dot">
+     .
+    </span>
+   </a>
+   <p>
+    Escolhas melhores. Compras mais conscientes.
+   </p>
+   <span>
+    © 2026 Hunter
+   </span>
+  </footer>
+  <dialog id="confirmDialog">
+   <form method="dialog">
+    <h2 id="confirmTitle">
+     Confirmar ação
+    </h2>
+    <p id="confirmText">
+    </p>
+    <div class="actions">
+     <button class="button secondary" value="cancel">
+      Cancelar
+     </button>
+     <button class="button danger" value="confirm">
+      Confirmar
+     </button>
+    </div>
+   </form>
+  </dialog>
+  <script defer="" src="https://vlibras.gov.br/app/vlibras-plugin.js">
+  </script>
+  <div class="enabled" vw="">
+   <div class="active" vw-access-button="">
+   </div>
+   <div vw-plugin-wrapper="">
+    <div class="vw-plugin-top-wrapper">
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

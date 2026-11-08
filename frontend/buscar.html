@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta content="Compare ofertas e acompanhe preços no Hunter." name="description"/>
+  <title>
+   Buscar ofertas — Hunter
+  </title>
+  <link href="assets/css/ui.css?v=20261107-2" rel="stylesheet"/>
+  <script defer src="runtime-config.js"></script>
+  <script defer src="assets/js/api.js?v=20261107-2"></script>
+  <script defer="" src="assets/js/ui.js?v=20261107-2">
+  </script>
+  <script defer src="assets/js/pages/search.js?v=20261107-2"></script>
+ </head>
+ <body data-page="search">
+  <a class="skip-link" href="#main">
+   Ir para o conteúdo
+  </a>
+  <header class="site-header">
+   <nav aria-label="Navegação principal" class="site-nav">
+    <a aria-label="Hunter, início" class="brand" href="index.html">
+     <span aria-hidden="true" class="brand-mark">
+      H
+     </span>
+     hunter
+     <span class="brand-dot">
+      .
+     </span>
+    </a>
+    <button aria-controls="navLinks" aria-expanded="false" class="menu-toggle" id="menuToggle" type="button">
+     Menu
+     <span aria-hidden="true">
+      ☰
+     </span>
+    </button>
+    <div class="nav-links" id="navLinks">
+     <a href="index.html">
+      Início
+     </a>
+     <a href="buscar.html">
+      Buscar ofertas
+     </a>
+     <a href="alertas.html">
+      Meus alertas
+     </a>
+     <a href="feedback.html">
+      Feedback
+     </a>
+     <a href="configurar.html">
+      Minha conta
+     </a>
+     <a class="nav-login" href="login.html" id="loginNav">
+      Entrar / Criar conta
+     </a>
+     <button class="nav-logout" hidden="" id="logoutLink" type="button">
+      Sair
+     </button>
+    </div>
+   </nav>
+  </header>
+  <div aria-atomic="true" aria-live="polite" class="notifications" id="notifications">
+  </div>
+  <main class="site-main" id="main">
+   <div class="page-heading">
+    <p class="eyebrow">
+     ENCONTRE SUA PRÓXIMA BOA COMPRA
+    </p>
+    <h1>
+     Buscar ofertas
+    </h1>
+    <p>
+     Compare preços com calma. Refine a busca do seu jeito.
+    </p>
+   </div>
+   <form class="search-bar" id="searchForm">
+    <label class="sr-only" for="productName">
+     Nome do produto
+    </label>
+    <input id="productName" maxlength="255" placeholder="Qual produto você procura?" required=""/>
+    <button class="button primary" type="submit">
+     Buscar ofertas
+    </button>
+   </form>
+   <div class="search-layout">
+    <aside aria-label="Filtros de produtos" class="panel filters">
+     <div class="section-heading compact">
+      <h2>
+       Filtros
+      </h2>
+      <button class="text-link" id="clearFilters" type="button">
+       Limpar
+      </button>
+     </div>
+     <label for="storeFilter">
+      Loja de origem
+     </label>
+     <select id="storeFilter">
+      <option value="">
+       Todas as lojas
+      </option>
+      <option>
+       KaBuM!
+      </option>
+      <option>
+       Mercado Livre
+       </option>
+       <option value="Pichau">Pichau</option>
+     </select>
+     <fieldset>
+      <legend>
+       Faixa de preço
+      </legend>
+      <div class="two-grid">
+       <div>
+        <label for="minPrice">
+         Mínimo (R$)
+        </label>
+        <input id="minPrice" max="1000000000" min="0" placeholder="0,00" step="0.01" type="number"/>
+       </div>
+       <div>
+        <label for="maxPrice">
+         Máximo (R$)
+        </label>
+        <input id="maxPrice" max="1000000000" min="0" placeholder="Sem limite" step="0.01" type="number"/>
+       </div>
+      </div>
+     </fieldset>
+     <p class="field-error" hidden="" id="filterError" role="alert">
+     </p>
+     <label for="shippingFilter">
+      Frete
+     </label>
+     <select id="shippingFilter">
+      <option value="all">
+       Todos
+      </option>
+       <option value="free">
+       Frete grátis
+      </option>
+     </select>
+     <p class="hint">
+       O filtro inclui apenas frete grátis sem restrição registrada. Promoções regionais aparecem nas ofertas; confirme seu CEP na loja.
+     </p>
+     <div class="catalog-note">
+      <label class="catalog-priority-control" for="preferObserved">
+       <input type="checkbox" id="preferObserved" checked/>
+       Priorizar catálogo datado
+      </label>
+      <strong>
+       Uma compra bem informada
+      </strong>
+      <p>
+       Os preços vêm do catálogo armazenado e podem mudar. Frete, estoque e condições de pagamento devem ser confirmados na loja.
+      </p>
+     </div>
+    </aside>
+    <section aria-label="Ofertas" class="search-results">
+     <div class="results-header">
+      <div>
+       <p aria-live="polite" id="resultsCount" role="status">
+        Comece buscando um produto.
+       </p>
+       <span class="subtle" id="categoryLabel">
+       </span>
+      </div>
+      <div class="sort-control">
+       <label for="sortOrder">
+        Ordenar
+       </label>
+       <select id="sortOrder">
+        <option value="priceAsc">
+         Menor preço
+        </option>
+        <option value="priceDesc">
+         Maior preço
+        </option>
+       </select>
+      </div>
+     </div>
+     <p class="hint">Consulte a data da coleta e o histórico de cada oferta. Preços sem data são identificados como legados.</p>
+     <p class="hint" id="searchPriorityNote">Catálogo datado primeiro; preço ordenado dentro de cada grupo. Desmarque a prioridade para ordenar todos os registros por preço.</p>
+     <div class="product-grid" id="resultList">
+     </div>
+     <div id="searchState">
+     </div>
+     <div class="load-more">
+      <button class="button secondary" hidden="" id="loadMore" type="button">
+       Carregar mais ofertas
+      </button>
+     </div>
+    </section>
+   </div>
+  </main>
+  <footer class="site-footer">
+   <a class="brand" href="index.html">
+    hunter
+    <span class="brand-dot">
+     .
+    </span>
+   </a>
+   <p>
+    Escolhas melhores. Compras mais conscientes.
+   </p>
+   <span>
+    © 2026 Hunter
+   </span>
+  </footer>
+  <dialog id="confirmDialog">
+   <form method="dialog">
+    <h2 id="confirmTitle">
+     Confirmar ação
+    </h2>
+    <p id="confirmText">
+    </p>
+    <div class="actions">
+     <button class="button secondary" value="cancel">
+      Cancelar
+     </button>
+     <button class="button danger" value="confirm">
+      Confirmar
+     </button>
+    </div>
+   </form>
+  </dialog>
+  <script defer="" src="https://vlibras.gov.br/app/vlibras-plugin.js">
+  </script>
+  <div class="enabled" vw="">
+   <div class="active" vw-access-button="">
+   </div>
+   <div vw-plugin-wrapper="">
+    <div class="vw-plugin-top-wrapper">
+    </div>
+   </div>
+  </div>
+ </body>
+</html>

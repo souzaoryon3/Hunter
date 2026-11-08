@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <meta content="Compare ofertas e acompanhe preços no Hunter." name="description"/>
+  <title>
+   Meus alertas — Hunter
+  </title>
+  <link href="assets/css/ui.css?v=20261107-2" rel="stylesheet"/>
+  <script defer src="runtime-config.js"></script>
+  <script defer src="assets/js/api.js?v=20261107-2"></script>
+  <script defer="" src="assets/js/ui.js?v=20261107-2">
+  </script>
+  <script defer src="assets/js/pages/alerts.js?v=20261107-2"></script>
+ </head>
+ <body data-page="alerts">
+  <a class="skip-link" href="#main">
+   Ir para o conteúdo
+  </a>
+  <header class="site-header">
+   <nav aria-label="Navegação principal" class="site-nav">
+    <a aria-label="Hunter, início" class="brand" href="index.html">
+     <span aria-hidden="true" class="brand-mark">
+      H
+     </span>
+     hunter
+     <span class="brand-dot">
+      .
+     </span>
+    </a>
+    <button aria-controls="navLinks" aria-expanded="false" class="menu-toggle" id="menuToggle" type="button">
+     Menu
+     <span aria-hidden="true">
+      ☰
+     </span>
+    </button>
+    <div class="nav-links" id="navLinks">
+     <a href="index.html">
+      Início
+     </a>
+     <a href="buscar.html">
+      Buscar ofertas
+     </a>
+     <a href="alertas.html">
+      Meus alertas
+     </a>
+     <a href="feedback.html">
+      Feedback
+     </a>
+     <a href="configurar.html">
+      Minha conta
+     </a>
+     <a class="nav-login" href="login.html" id="loginNav">
+      Entrar / Criar conta
+     </a>
+     <button class="nav-logout" hidden="" id="logoutLink" type="button">
+      Sair
+     </button>
+    </div>
+   </nav>
+  </header>
+  <div aria-atomic="true" aria-live="polite" class="notifications" id="notifications">
+  </div>
+  <main class="site-main" id="main">
+   <div class="page-heading">
+    <p class="eyebrow">
+     SUAS COMPRAS, NO SEU TEMPO
+    </p>
+    <h1>
+     Meus alertas
+    </h1>
+    <p>
+     Defina seu preço desejado e acompanhe as ofertas do catálogo.
+    </p>
+   </div>
+   <div id="authGate">
+   </div>
+   <div hidden="" id="protectedContent">
+    <div class="manage-layout">
+     <section class="panel">
+      <h2 id="alertFormTitle">
+       Criar alerta
+      </h2>
+      <p class="subtle">
+       Escolha o produto e quanto deseja pagar.
+      </p>
+      <form id="alertForm">
+       <label for="produto">
+        Produto ou termo de busca
+       </label>
+       <input id="produto" maxlength="255" placeholder="Ex.: Monitor 24 polegadas" required=""/>
+       <label for="preco">
+        Preço desejado (R$)
+       </label>
+       <input id="preco" max="1000000000" min="0.01" placeholder="0,00" required="" step="0.01" type="number"/>
+       <div class="actions">
+        <button class="button primary" id="saveAlert" type="submit">
+         Salvar alerta
+        </button>
+        <button class="button secondary" hidden="" id="cancelAlert" type="button">
+         Cancelar edição
+        </button>
+       </div>
+      </form>
+     </section>
+     <section>
+      <div class="section-heading">
+       <h2>
+        Produtos acompanhados
+       </h2>
+       <button class="button secondary small" id="refreshAlerts" type="button">
+        Atualizar
+       </button>
+      </div>
+      <div class="notice info">
+       Os alertas acompanham o catálogo armazenado. Com o agendador e o worker ativos, você recebe notificações aqui quando o preço desejado é encontrado. Confirme preço, frete e estoque na loja.
+      </div>
+      <div class="list-stack" id="alertsList">
+      </div>
+     </section>
+    </div>
+    <section class="panel" aria-labelledby="notificationTitle">
+     <div class="section-heading">
+      <h2 id="notificationTitle">Suas notificações <span id="unreadCount" class="tag" aria-live="polite">0 não lidas</span></h2>
+      <button id="refreshNotifications" type="button" class="button secondary small">Atualizar notificações</button>
+     </div>
+     <p class="hint">Um aviso por vez em que o alerta passa a atingir seu preço desejado. Os valores refletem o catálogo no momento da detecção; não há envio por e-mail.</p>
+     <div id="notificationList" class="list-stack" aria-live="polite"></div>
+     <button id="moreNotifications" type="button" class="button secondary" hidden="">Carregar mais notificações</button>
+    </section>
+   </div>
+  </main>
+  <footer class="site-footer">
+   <a class="brand" href="index.html">
+    hunter
+    <span class="brand-dot">
+     .
+    </span>
+   </a>
+   <p>
+    Escolhas melhores. Compras mais conscientes.
+   </p>
+   <span>
+    © 2026 Hunter
+   </span>
+  </footer>
+  <dialog id="confirmDialog">
+   <form method="dialog">
+    <h2 id="confirmTitle">
+     Confirmar ação
+    </h2>
+    <p id="confirmText">
+    </p>
+    <div class="actions">
+     <button class="button secondary" value="cancel">
+      Cancelar
+     </button>
+     <button class="button danger" value="confirm">
+      Confirmar
+     </button>
+    </div>
+   </form>
+  </dialog>
+  <script defer="" src="https://vlibras.gov.br/app/vlibras-plugin.js">
+  </script>
+  <div class="enabled" vw="">
+   <div class="active" vw-access-button="">
+   </div>
+   <div vw-plugin-wrapper="">
+    <div class="vw-plugin-top-wrapper">
+    </div>
+   </div>
+  </div>
+ </body>
+</html>
