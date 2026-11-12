@@ -138,7 +138,7 @@ def parse_html(html, url):
             "nome": produto,
             "preco": preco,
             "link": link,
-            "imagem_url": image_from_card(li, url),
+            "imagem_url": image_from_card(li, url, link),
             "coletado_em": datetime.now(timezone.utc),
             "fonte_coleta": 'html_publico',
             "fonte_url": url,

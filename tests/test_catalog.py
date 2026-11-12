@@ -32,6 +32,60 @@ class CatalogParserTests(unittest.TestCase):
         card = BeautifulSoup('<img data-src="/photo.jpg" src="data:image/png,x">', 'html.parser')
         self.assertEqual(image_from_card(card, 'https://example.com/item'), 'https://example.com/photo.jpg')
 
+    def test_favorite_icon_and_ambiguous_images_are_ignored(self):
+        from scraping.catalog_store import product_image
+        card = BeautifulSoup('''<article>
+            <button aria-label="Favoritar"><img src="https://cdn.example.com/heart.png"></button>
+            <a href="/item"><img src="https://cdn.example.com/product.jpg"></a>
+            </article>''', 'html.parser')
+        self.assertEqual(image_from_card(card, 'https://example.com', 'https://example.com/item'),
+                         'https://cdn.example.com/product.jpg')
+        self.assertIsNone(product_image('https://cdn.example.com/wishlist-heart.png'))
+        ambiguous = BeautifulSoup('<div><img src="https://cdn.example.com/a.jpg"><img src="https://cdn.example.com/b.jpg"></div>', 'html.parser')
+        self.assertIsNone(image_from_card(ambiguous, 'https://example.com'))
+
+    def test_new_store_registry_and_amazon_product_scope(self):
+        import json
+        from scraping.public_sources import STORES
+        from scraping.tech_stores import parse_html
+        from scraping.tech_stores import public_url
+        for store in ('TerabyteShop', 'Amazon Brasil', 'Magalu', 'Fast Shop', 'GK InfoStore'):
+            self.assertIn(store, STORES)
+        product = 'https://www.amazon.com.br/Teclado-Teste/dp/B012345678'
+        self.assertEqual(public_url('Amazon Brasil', product), product)
+        with self.assertRaises(ValueError):
+            public_url('Amazon Brasil', 'https://www.amazon.com.br/gp/sign-in')
+        product = {'@type': 'Product', 'name': 'GPU Teste',
+                   'image': ['https://cdn.example.com/favorite-heart.png',
+                             'https://cdn.example.com/gpu-model.webp'],
+                   'offers': {'@type': 'Offer', 'priceCurrency': 'BRL', 'price': '999.90',
+                              'availability': 'https://schema.org/InStock'}}
+        html = '<h1>GPU Teste</h1><script type="application/ld+json">' + json.dumps(product) + '</script>'
+        rows = parse_html('GK InfoStore', html, 'https://www.gkinfostore.com.br/gpu-teste')
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]['imagem_url'], 'https://cdn.example.com/gpu-model.webp')
+
+    def test_scrapling_similarity_cards_keep_only_unambiguous_product_images(self):
+        from scraping.tech_stores import parse_html
+        html = '''<section class="products">
+          <article class="tile-old"><a href="/placa-video-a">
+            <button aria-label="Favoritar"><img src="https://cdn.example.com/heart.png"></button>
+            <img src="https://cdn.example.com/gpu-a.webp"><h2>GPU A</h2><span>R$ 999,90</span>
+          </a></article>
+          <div class="new-tile"><a class="card-link" href="/placa-video-b">
+            <img src="https://cdn.example.com/gpu-b.webp"><h3>GPU B</h3><span>R$ 1.199,90</span>
+          </a></div>
+          <article><a href="/placa-video-c"><img src="https://cdn.example.com/a.webp">
+            <img src="https://cdn.example.com/b.webp"><h2>GPU C</h2><span>R$ 1.399,90</span>
+          </a></article>
+        </section>'''
+        rows = parse_html('GK InfoStore', html, 'https://www.gkinfostore.com.br/placas-video')
+        by_name = {row['nome']: row for row in rows}
+        self.assertEqual(set(by_name), {'GPU A', 'GPU B', 'GPU C'})
+        self.assertEqual(by_name['GPU A']['imagem_url'], 'https://cdn.example.com/gpu-a.webp')
+        self.assertEqual(by_name['GPU B']['imagem_url'], 'https://cdn.example.com/gpu-b.webp')
+        self.assertIsNone(by_name['GPU C']['imagem_url'])
+
     def test_kabum_product_link_and_image(self):
         items = kabum_html('''<article class="productCard"><a href="/produto/123/mouse">
             <img src="https://cdn.example.com/mouse.jpg"><span class="nameCard">Mouse</span>

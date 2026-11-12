@@ -40,7 +40,8 @@ def main_admin_dsn(runtime_dsn):
 async def inspect(conn):
     versions={r['version']:r['checksum'] for r in await conn.fetch('SELECT version,checksum FROM hunter_schema_migrations')}
     filenames={'002':'002_alertas_assincronos.sql','003':'003_catalogo_historico.sql',
-               '004':'004_catalogo_candidatos.sql','005':'005_rotacao_multiloja.sql'}
+               '004':'004_catalogo_candidatos.sql','005':'005_rotacao_multiloja.sql',
+               '006':'006_lojas_tecnologia.sql'}
     for version,checksum in versions.items():
         if version in filenames and hashlib.sha256((ROOT/'migrations'/filenames[version]).read_text(encoding='utf-8').encode()).hexdigest()!=checksum:
             raise ValueError('Checksum divergente')
@@ -106,6 +107,7 @@ async def run(args):
         from messaging.migrate import migrate
         await migrate('004')
         await migrate('005')
+        await migrate('006')
         conn=await asyncpg.connect(dsn,server_settings={'default_transaction_read_only':'on'})
         try:
             if before!=await fingerprint(conn):

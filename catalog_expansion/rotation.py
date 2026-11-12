@@ -118,7 +118,7 @@ async def collect_rotation(conn,config,adapters=None):
                     raise ValueError('Contrato de adaptador invalido')
             except Exception:
                 response=FetchResult([],'network_error')
-            blocked=(response.http_status in (401,403) or any(x in response.status for x in ('robots_','desafio','redirecionamento')))
+            blocked=(response.http_status in (401,403,423) or any(x in response.status for x in ('robots_','desafio','redirecionamento','loja_indisponivel')))
             limited=response.http_status==429
             result='blocked' if blocked else ('success' if response.status=='ok' and response.items else 'failed')
             error=None if result=='success' else ('access_denied' if blocked else 'rate_limited' if limited else

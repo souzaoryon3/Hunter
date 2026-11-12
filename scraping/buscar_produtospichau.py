@@ -22,7 +22,7 @@ from bs4 import BeautifulSoup
 
 if __package__ in (None, ''):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from scraping.catalog_store import https_url, image_from_card, save_observations, product_jsonld
+from scraping.catalog_store import https_url, image_from_card, save_observations, product_jsonld, product_image
 
 ROOT = Path(__file__).resolve().parents[1]
 BASE = 'https://www.pichau.com.br'
@@ -73,7 +73,7 @@ def validate(item, source, captured_at):
                 pagamento=payment, categoria=str(item.get('categoria', ''))[:255],
                 frete_gratis=shipping, frete_observacao=note[:1000], disponivel=available,
                 fonte_coleta=source, fonte_url=public_url(item.get('fonte_url') or item['link']),
-                coletado_em=captured_at, imagem_url=https_url(item.get('imagem_url'), optional=True))
+                coletado_em=captured_at, imagem_url=product_image(item.get('imagem_url')))
 
 
 def shipping_note(text):
@@ -118,7 +118,7 @@ def parse_html(html, url, category=''):
         text = card.get_text('\n', strip=True)
         text = re.split(r'Características|INFORMAÇÕES ADICIONAIS|Veja as Avaliações', text, flags=re.I)[0]
         # Cartões: "por R$ ... À vista ... PIX"; produto: "à vista R$ ... no PIX".
-        match = re.search(r'(?:por\s*:?\s*|[àa]\s*vista\s*)R\$\s*([\d.,]+)\s*(?:[Ààa]\s*vista\s*)?(?:\d+%\s*de\s*desconto\s*)?no\s*PIX', text, re.I)
+        match = re.search(r'(?:por\s*:?\s*|[àa]\s*vista\s*)R\$\s*([\d.,]+)\s*(?:[Ààa]\s*vista\s*)?(?:\d+\s*%\s*de\s*desconto\s*)?no\s*PIX', text, re.I)
         if not match:
             continue
         tail = text[match.end():]
@@ -126,7 +126,7 @@ def parse_html(html, url, category=''):
         items.append(dict(nome=heading.get_text(' ', strip=True), preco=match.group(1),
                           imagem_url=(soup.select_one('meta[property="og:image"]').get('content')
                                       if not listing and soup.select_one('meta[property="og:image"]')
-                                      else image_from_card(card, url) if listing or card.name in ('main','a') else None),
+                                      else image_from_card(card, url, link) if listing or card.name in ('main','a') else None),
                           preco_cartao=credit.group(1) if credit else None, link=link,
                           categoria=category, pagamento='Pix', fonte_url=url,
                           frete_observacao=shipping_note(text), frete_gratis=None,

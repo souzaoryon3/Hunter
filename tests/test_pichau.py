@@ -79,12 +79,11 @@ class ParserTests(unittest.TestCase):
         from types import SimpleNamespace
         from unittest.mock import Mock
         session=Mock();session.headers={}
-        session.get.side_effect=[SimpleNamespace(status_code=404,text=''),
-            SimpleNamespace(status_code=301,headers={'Location':URL}),
+        session.get.side_effect=[SimpleNamespace(status_code=301,headers={'Location':URL}),
             SimpleNamespace(status_code=200,url=URL,text='<h1>Teclado teste</h1>por R$ 119,99 no PIX')]
-        with patch('scraping.buscar_produtospichau.requests.Session',return_value=session),patch('time.sleep'):
+        with patch('scraping.public_sources.transport.Session',return_value=session),patch('time.sleep'):
             self.assertEqual(collect([URL+'/'])[0]['link'],URL)
-        self.assertEqual(session.get.call_count,3)
+        self.assertEqual(session.get.call_count,2)
         session.close.assert_called_once()
 
     def test_jsonld_listing_never_uses_homepage_as_missing_product_url(self):
@@ -95,7 +94,7 @@ class ParserTests(unittest.TestCase):
         with self.assertRaises(ValueError):parse_html(html,'https://www.pichau.com.br/perifericos/teclado')
 
     def test_http_block_does_not_retry(self):
-        with patch('scraping.buscar_produtospichau.requests.Session') as session:
+        with patch('scraping.public_sources.transport.Session') as session:
             session.return_value.get.return_value.status_code = 403
             with self.assertRaisesRegex(ValueError, 'HTTP 403'):
                 collect([URL])

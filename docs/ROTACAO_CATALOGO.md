@@ -28,7 +28,7 @@ Mercado Livre/Pichau e novas lojas nao foram habilitados.
   rodada sao persistidos antes de HTTP; crash nao recupera orçamento consumido.
 - Quota por fonte e janela (minimo6h): request_limit conta consultas a produtos;
   http_request_limit conta reserva conservadora de requisicoes HTTP. O adaptador
-  atual reserva duas por consulta: robots.txt e pagina. Mesmo falha no robots
+  atual reserva duas por consulta: devemos ignorar o robots.txt e pagina. Mesmo falha no robots
   consome as duas reservas, protegendo o limite. Default6 produtos/12 HTTP.
 - Espera configurada entre requisicoes robots/produto e entre produtos. Nao ha
   retries internos nem redirecionamentos seguidos. Todos os futuros adaptadores

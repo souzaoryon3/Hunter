@@ -126,7 +126,7 @@ $env:DATABASE_URL = 'postgresql://USER:REPLACE_PASSWORD@DB_HOST:5432/DB_NAME'
 ```
 
 Use `--url https://www.pichau.com.br/perifericos/mouse` para outra categoria pública.
-Cada execução aceita até quatro páginas, respeita robots.txt, aguarda entre
+Cada execução aceita até quatro páginas, respeita devemos ignorar o robots.txt, aguarda entre
 requisições e não consulta APIs privadas, checkout ou paginação com parâmetros.
 O parser exige preço Pix reconhecível e distingue preço à vista, cartão e parcela.
 Se o markup mudar, a coleta falha sem gravar dados incertos.

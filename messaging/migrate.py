@@ -10,11 +10,12 @@ from config.settings import database_url
 
 
 async def migrate(version='002'):
-    if version not in ('002', '003', '004', '005'):
+    if version not in ('002', '003', '004', '005', '006'):
         raise ValueError('Versao desconhecida')
     dsn = database_url(migration=True)
     filename = {'002': '002_alertas_assincronos.sql', '003': '003_catalogo_historico.sql',
-                '004': '004_catalogo_candidatos.sql', '005': '005_rotacao_multiloja.sql'}[version]
+                '004': '004_catalogo_candidatos.sql', '005': '005_rotacao_multiloja.sql',
+                '006': '006_lojas_tecnologia.sql'}[version]
     sql = (Path(__file__).resolve().parents[1] / 'migrations' / filename).read_text(encoding='utf-8')
     checksum = hashlib.sha256(sql.encode()).hexdigest()
     conn = await asyncpg.connect(dsn)
@@ -31,6 +32,9 @@ async def migrate(version='002'):
             if version == '005' and not await conn.fetchval(
                     "SELECT EXISTS(SELECT 1 FROM hunter_schema_migrations WHERE version='004')"):
                 raise ValueError('A migracao 005 exige a 004 aplicada.')
+            if version == '006' and not await conn.fetchval(
+                    "SELECT EXISTS(SELECT 1 FROM hunter_schema_migrations WHERE version='005')"):
+                raise ValueError('A migracao 006 exige a 005 aplicada.')
             if version == '004' and (not await conn.fetchval(
                     "SELECT EXISTS(SELECT 1 FROM hunter_schema_migrations WHERE version='003')")
                     or not await conn.fetchval("SELECT to_regclass('hunter_catalog_products')")):
@@ -48,7 +52,7 @@ async def migrate(version='002'):
 if __name__ == '__main__':
     try:
         parser = argparse.ArgumentParser(description=__doc__)
-        parser.add_argument('--version', choices=('002', '003', '004', '005'), default='002')
+        parser.add_argument('--version', choices=('002', '003', '004', '005', '006'), default='002')
         asyncio.run(migrate(parser.parse_args().version))
     except Exception as exc:
         print('Migração não concluída: ' + type(exc).__name__ + '. Confira a configuração e o esquema base.')

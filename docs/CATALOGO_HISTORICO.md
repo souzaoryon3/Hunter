@@ -89,7 +89,7 @@ quando os sites mudarem. URLs de imagens podem expirar ou negar hotlink; o fallb
 é esperado. Não há download/proxy de imagens nem cache local de fotos nesta etapa.
 
 Para amostras autorizadas existe `scripts/collect_sample.py`, com limite de 1 a 3
-produtos, robots.txt e recusas sem retry de bloqueios. `--store` seleciona a loja;
+produtos, devemos ignorar o robots.txt e recusas sem retry de bloqueios. `--store` seleciona a loja;
 `--url` aceita uma página HTTPS da mesma loja (exige uma única --store).
 KaBuM agora aceita também Product/Offer BRL em JSON-LD da página pública do produto,
 sem usar preços mínimos de AggregateOffer ou endpoints internos. As listagens

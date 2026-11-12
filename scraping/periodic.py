@@ -93,7 +93,7 @@ def state_path(database_url):
 
 
 def is_blocked(status):
-    return any(value in status for value in ('403','429','redirecionamento','desafio','robots_'))
+    return any(value in status for value in ('403','423','429','redirecionamento','desafio','robots_','loja_indisponivel'))
 
 
 async def collect_due(conn,config,journal,fetch=collect_sample,now=None):

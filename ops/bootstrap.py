@@ -40,7 +40,7 @@ async def main():
         await conn.close()
     from messaging.migrate import migrate
 
-    for version in ("002", "003", "004", "005"):
+    for version in ("002", "003", "004", "005", "006"):
         await migrate(version)
 
 

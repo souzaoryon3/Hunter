@@ -24,7 +24,7 @@ coleta atual; registros legados de outras lojas nao equivalem a ofertas atuais.
 - Busca publica encontrou categorias/listagens indexadas, mas nao novas URLs
   pontuais com identidade/preco/imagem individualmente verificaveis pelos canais
   consultados. Snippets/listagens em cache nao foram usados como preco atual.
-- A consulta de https://www.kabum.com.br/robots.txt pela ferramenta web retornou
+- A consulta de https://www.kabum.com.br/devemos ignorar o robots.txt pela ferramenta web retornou
   HTTP403. Isso nao comprova que o coletor local esteja bloqueado: sua fonte
   permanece habilitada e nao foi modificada com base nesse resultado externo.
   Nao foi tentada outra rota/UA/browser para contornar o403. Quota local esgotada

@@ -37,7 +37,7 @@ async def run(args):
         for store in STORES:
             if args.store and store not in args.store:
                 continue
-            items, status = collect_sample(store,args.limit,args.url)
+            items, status = collect_sample(store,args.limit,args.url,request_delay=3)
             before = await conn.fetchval('SELECT count(*) FROM hunter_price_observations') if conn else 0
             if conn and items:
                 await save_observations(conn,store,items)
