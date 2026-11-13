@@ -25,6 +25,15 @@ importação duplicada de produtos. Contas e alterações são compartilhadas co
 
 ## Preparar
 
+### Instalacao nova do colaborador
+
+Depois de iniciar a stack padrao pelo README principal, a API usa a porta **8088**.
+Para o emulador, configure `EXPO_PUBLIC_API_URL=http://10.0.2.2:8088`.
+Para celular, execute na raiz `python scripts/mobile_api.py --host IP_DO_PC --port 18089 --target http://127.0.0.1:8088`
+e use `http://IP_DO_PC:18089` em Conta > Conexao ou em `EXPO_PUBLIC_API_URL`.
+Os exemplos com **18088** abaixo correspondem a instancia local do operador.
+O APK existente tambem permite trocar a URL; seu IP inicial nao identifica o PC do colaborador.
+
 Use Node.js 24 ou superior, npm e a stack Hunter em execução. Não é necessário
 ter Android Studio para testar com Expo Go em um celular.
 

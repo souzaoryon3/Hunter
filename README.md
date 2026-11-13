@@ -22,11 +22,10 @@ Internet e necessaria no primeiro build para baixar imagens, pacotes e Chromium.
 Nao e preciso instalar PostgreSQL, RabbitMQ, Node ou certificados no host para
 usar o caminho Docker. Python usa apenas biblioteca padrao no comando de inicio.
 
-Depois de a equipe autorizar e disponibilizar um **novo repositorio sem o historico
-antigo**, clone sua URL (substitua o marcador; nenhum repositorio foi criado):
+Com acesso ao repositorio privado da equipe, clone a branch `main`:
 
 ```text
-git clone <URL_DO_NOVO_REPOSITORIO_DA_EQUIPE> Hunter
+git clone --branch main https://github.com/souzaoryon3/Hunter.git Hunter
 cd Hunter
 python scripts/dev.py configure
 python scripts/dev.py up
@@ -35,8 +34,9 @@ python scripts/smoke_dev.py
 
 No Windows, use `py -3.12` se `python` nao apontar para Python 3.12. No Linux,
 use `python3.12`. Os mesmos argumentos funcionam nos dois sistemas. Antes de
-existir uma URL, extraia o snapshot preparado e execute os mesmos comandos dentro
-da pasta `Hunter`. Nao copie `.git`, `.env.*`, `.secrets` ou dados do operador.
+usar um snapshot, extraia-o e execute os mesmos comandos dentro da pasta `Hunter`.
+Nao copie `.env.*`, `.secrets` ou dados do operador. O guia para o colaborador esta
+em [docs/GUIA_COLABORADOR.docx](docs/GUIA_COLABORADOR.docx).
 
 `configure` cria **.env.dev.local** ignorado, com tres segredos aleatorios novos;
 recusa substituir um arquivo existente. Nao use os placeholders de `.env.example`
