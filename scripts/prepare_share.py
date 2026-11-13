@@ -61,6 +61,7 @@ def main():
     if rejected:
         raise ValueError("Snapshot recusado: referencia a segredo historico em " + ", ".join(rejected))
     required = ["backend/main.py", "frontend/index.html", "migrations/005_rotacao_multiloja.sql",
+                "migrations/006_lojas_tecnologia.sql",
                 "ops/base_schema.sql", "compose.dev.yaml", "scripts/dev.py", "requirements.txt", ".env.example"]
     if any(name not in payload for name in required):
         raise ValueError("Snapshot incompleto")

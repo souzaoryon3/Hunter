@@ -38,6 +38,7 @@ async def bootstrap(settings):
     await migrate('003')
     await migrate('004')
     await migrate('005')
+    await migrate('006')
 
 
 if __name__ == '__main__':

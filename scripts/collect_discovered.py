@@ -20,11 +20,11 @@ from catalog_expansion.repository import CandidateRepository
 from catalog_expansion.constants import COLLECTION_LOCK
 from scraping.buscar_produtoskabum import parse_html
 from scraping.catalog_store import normalize, save_observations
-from scraping.public_sources import AGENT
+from scraping.public_sources import AGENT, respect_robots
 
 
 def public_get(session, robots, url):
-    if not robots.can_fetch(AGENT,url):
+    if respect_robots() and robots is not None and not robots.can_fetch(AGENT,url):
         return None,'robots_disallows'
     time.sleep(3)
     response=session.get(url,timeout=(10,25),allow_redirects=False)
@@ -66,11 +66,13 @@ async def main(args):
         source=await conn.fetchrow("SELECT * FROM hunter_catalog_sources WHERE code='kabum_public'")
         if not source or source['state']!='enabled':raise ValueError('Fonte KaBuM nao habilitada; nao reativar bloqueios')
         existing=set(await conn.fetchval("SELECT coalesce(array_agg(link),ARRAY[]::text[]) FROM hunter_catalog_products WHERE loja='KaBuM!'"))
-        response=session.get('https://www.kabum.com.br/robots.txt',timeout=(10,20),allow_redirects=False)
-        report['requests'].append({'url':'https://www.kabum.com.br/robots.txt','http':response.status_code})
-        if response.status_code not in (200,404):
-            report['stopped']='robots_http_'+str(response.status_code);return
-        robots=RobotFileParser();robots.parse(response.text.splitlines() if response.status_code==200 else [])
+        robots = None
+        if respect_robots():
+            response=session.get('https://www.kabum.com.br/robots.txt',timeout=(10,20),allow_redirects=False)
+            report['requests'].append({'url':'https://www.kabum.com.br/robots.txt','http':response.status_code})
+            if response.status_code not in (200,404):
+                report['stopped']='robots_http_'+str(response.status_code);return
+            robots=RobotFileParser();robots.parse(response.text.splitlines() if response.status_code==200 else [])
         seen=set()
         repo=CandidateRepository(conn)
         for page in range(args.start_page,args.start_page+args.max_pages):

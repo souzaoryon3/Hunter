@@ -36,7 +36,7 @@ como senhas. A API nao carrega `.env` automaticamente; o helper passa esse arqui
 exclusivamente ao Compose de desenvolvimento e ignora overrides do terminal.
 
 A stack `hunter-dev` cria rede e volumes proprios, inicializa um **banco vazio**,
-aplica baseline/001 e migra??es 002?005, depois inicia API, worker, scheduler e
+aplica baseline/001 e migra??es 002?006, depois inicia API, worker, scheduler e
 frontend. O bootstrap confere checksums a cada inicio, sem apagar dados e sem
 recriar tabelas existentes. Uma oferta `DEMO FICTICIO - Teclado Hunter`, R$99,90,
 com link example.invalid, permite testar busca e alertas. Nenhum usuario e
@@ -110,7 +110,7 @@ MIGRATION_DATABASE_URL e HUNTER_ENV=local no shell, depois
 HUNTER_ALLOW_EMPTY_BOOTSTRAP=1 e `python -B -m ops.bootstrap`. Esse bootstrap recusa
 banco com tabelas existentes. Confira sempre host, porta e nome antes de qualquer
 operacao. Para evoluir um banco existente, use migracoes incrementais revisadas;
-nao altere SQL ja aplicado. O executor atual aceita 002,003,004,005; uma nova versao
+nao altere SQL ja aplicado. O executor atual aceita 002,003,004,005,006; uma nova versao
 exige atualizar o executor e testes. Nao executar comandos administrativos do
 operador para instalar o projeto da equipe.
 
@@ -156,7 +156,6 @@ Consulte [simulacao](docs/SIMULACAO_PRODUCAO.md) e
 - Login apos renovar JWT: autentique novamente. Nunca compartilhe tokens.
 - Busca vazia: use `DEMO FICTICIO`; precos reais nao sao importados automaticamente.
 - Dashboard sem dados reais: selecione origem demo; insuficiencia real e esperada.
-- Coleta recusada/403: respeite o bloqueio; nao tente contornar desafios.
 - Diagnostico: use status e logs locais com cuidado; nao envie `compose config`,
   `docker inspect` ou ambientes completos, pois podem mostrar segredos.
 - Navegador Linux: use o runner Bookworm preparado; ele instala Chromium e suas
@@ -189,3 +188,42 @@ Leia [estrategia e inventario](docs/COMPARTILHAMENTO.md). Segredos locais, backu
 dados de usuarios e volumes nao fazem parte do pacote. Nao execute git add . no
 repositorio antigo como estrategia de saneamento: .gitignore nao limpa historico.
 Nenhum commit, push, novo repositorio remoto ou deploy e criado automaticamente.
+
+### Coleta de perifericos
+
+`.venv\Scripts\python.exe -B scripts/collect_peripherals.py --target 50 --max-pages 5`
+
+Busca ate 50 produtos unicos por loja em dez categorias, com cota inicial de cinco
+por categoria e redistribuicao das vagas restantes. Segue links de proxima pagina
+presentes no HTML: padrao de cinco paginas por categoria, configuravel de uma a dez.
+O relatorio JSON com ofertas, categorias e resultados HTTP fica em `%TEMP%/HunterRuntime`.
+Esta execucao nao grava no PostgreSQL.
+
+A consulta ao `robots.txt` esta desativada por padrao nos coletores compartilhados
+e em `collect_discovered.py`. Para reativa-la, defina `HUNTER_RESPECT_ROBOTS=1`.
+CAPTCHA, autenticacao e respostas 401/403/429 continuam interrompendo a coleta.
+
+
+O modo `--transport auto` usa navegador Scrapling/Patchright em Fast Shop, Amazon,
+Magalu e GK, e HTTP nas demais lojas. `--transport http` e `--transport browser`
+permitem selecionar explicitamente o transporte nesta coleta. Perfis de navegador
+sao temporarios; a Amazon inicia pela homepage e conserva cookies na mesma coleta.
+Paginas iguais entre categorias sao reutilizadas em memoria; HTTP 503 recebe uma
+unica repeticao com espera limitada. CAPTCHA e autenticacao continuam interrompendo
+a coleta. HTTP 423 com pagina de loja bloqueada e classificado como indisponibilidade
+da loja e tambem suspende a fonte nos coletores periodicos.
+
+Instalacao do navegador apos instalar `requirements.txt`:
+
+```powershell
+.venv\Scripts\python.exe -m patchright install chromium
+.venv\Scripts\python.exe -m playwright install chromium
+```
+
+O segundo comando prepara os testes de interface existentes. Versoes utilizadas:
+Scrapling 0.5.1, Playwright 1.65.1 e Patchright 1.64.4.
+Para repetir somente as quatro lojas desta etapa, sem Mercado Livre:
+
+```powershell
+.venv\Scripts\python.exe -B scripts/collect_peripherals.py --store "Fast Shop" --store "Amazon Brasil" --store Magalu --store "GK InfoStore" --target 50 --max-pages 5
+```

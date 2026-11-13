@@ -23,16 +23,55 @@ def https_url(value, optional=False):
     return u._replace(fragment='').geturl()
 
 
-def image_from_card(card, base):
+def product_image(value, base=None):
+    """Imagem declarada do produto; rejeita assets de interface e placeholders."""
+    import re
     from urllib.parse import urljoin
-    image = card.select_one('img')
-    if image is None:
+    if isinstance(value, list):
+        return next((image for entry in value if (image := product_image(entry, base))), None)
+    if isinstance(value, dict):
+        value = value.get('contentUrl') or value.get('url')
+    if not isinstance(value, str) or not value.strip():
         return None
-    value = image.get('data-src') or image.get('data-lazy-src') or image.get('src')
     try:
-        return https_url(urljoin(base, value), optional=True) if value else None
+        url = https_url(urljoin(base, value.strip()) if base else value.strip())
     except ValueError:
         return None
+    path = urlsplit(url).path.lower()
+    if (re.search(r'(?:^|[/_.-])(heart|wishlist|favorite|favourite|favorito|coracao|icon|icons|logo|sprite|placeholder|loading|spinner|pixel|spacer|banner|badge)(?:[/_.-]|$)', path)
+            or path.endswith(('.svg', '.gif'))):
+        return None
+    return url
+
+
+def image_from_card(card, base, product_link=None):
+    """Nunca usa imagem de botao; ambiguidade resulta em imagem ausente."""
+    import re
+    from urllib.parse import urljoin
+    candidates = {}
+    for image in card.select('img'):
+        ancestors = [image, *image.parents]
+        rejected = False
+        for node in ancestors:
+            attrs = ' '.join(str(node.get(key, '')) for key in ('class', 'id', 'alt', 'aria-label', 'title'))
+            if node.name == 'button' or node.get('role') == 'button' or re.search(
+                    r'heart|wishlist|favou?rit|favorit|cora(?:cao|c[a\u00e3]o)|logo|icon|placeholder|banner|badge|spinner', attrs, re.I):
+                rejected = True
+                break
+            if node is card:
+                break
+        if rejected:
+            continue
+        anchor = image.find_parent('a', href=True)
+        if product_link and anchor and urljoin(base, anchor['href']).split('#')[0] != product_link.split('#')[0]:
+            continue
+        if any(str(image.get(key, '')).isdigit() and int(image[key]) < 80 for key in ('width', 'height')):
+            continue
+        value = image.get('data-src') or image.get('data-lazy-src') or image.get('src')
+        url = product_image(value, base)
+        if url:
+            candidates[url] = True
+    return next(iter(candidates)) if len(candidates) == 1 else None
 
 
 def normalize(item):
@@ -57,7 +96,10 @@ def normalize(item):
         raise ValueError('Data real da observacao com fuso obrigatoria, sem futuro')
     data['link'] = https_url(data.get('link'))
     data['fonte_url'] = https_url(data.get('fonte_url') or data['link'])
-    data['imagem_url'] = https_url(data.get('imagem_url'), optional=True)
+    raw_image = data.get('imagem_url')
+    if raw_image and https_url(raw_image, optional=True) is None:
+        raise ValueError('URL de imagem HTTPS publica invalida')
+    data['imagem_url'] = product_image(raw_image)
     if not str(data.get('fonte_coleta', '')).strip():
         raise ValueError('Origem obrigatoria')
     for key in ('disponivel', 'frete_gratis'):
@@ -130,10 +172,12 @@ def persist_sync(store, products):
 def product_jsonld(soup, url, url_validator, *, single=False):
     """Product/Offer publico BRL, sem escolher lowPrice de varias ofertas."""
     import json
+    from scrapling import Selector
+    page = soup if isinstance(soup, Selector) else Selector(str(soup), url=url)
     nodes = []
-    for script in soup.select('script[type="application/ld+json"]'):
+    for raw in page.css('script[type="application/ld+json"]::text').getall():
         try:
-            doc = json.loads(script.get_text())
+            doc = json.loads(raw)
         except (ValueError, TypeError):
             continue
         stack = doc if isinstance(doc,list) else [doc]
@@ -151,10 +195,10 @@ def product_jsonld(soup, url, url_validator, *, single=False):
             if isinstance(node.get('item'),dict):
                 stack.append(node['item'])
     canonical = url
-    tag = soup.select_one('link[rel="canonical"][href]')
-    if tag:
+    canonical_url = page.css('link[rel="canonical"]::attr(href)').get()
+    if canonical_url:
         try:
-            canonical = url_validator(tag['href'])
+            canonical = url_validator(canonical_url)
         except ValueError:
             pass
     result = []
@@ -175,16 +219,11 @@ def product_jsonld(soup, url, url_validator, *, single=False):
             link = url_validator(link)
             if single and link not in (url_validator(url),canonical):
                 continue
-            image = node.get('image')
-            if isinstance(image,list):
-                image = image[0] if image else None
-            if isinstance(image,dict):
-                image = image.get('url') or image.get('contentUrl')
+            image = product_image(node.get('image'), url)
             item = normalize(dict(nome=node.get('name'),preco=offer.get('price'),link=link,
                                   imagem_url=image,coletado_em=datetime.now(timezone.utc),disponivel=True,
                                   fonte_coleta='html_publico_jsonld',fonte_url=url))
         except (ValueError,TypeError,AttributeError):
             continue
-        if item.get('imagem_url'):
-            result.append(item)
+        result.append(item)
     return list({row['link']:row for row in result}.values())

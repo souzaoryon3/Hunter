@@ -13,7 +13,7 @@ from bs4 import BeautifulSoup
 
 if __package__ in (None, ''):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from scraping.catalog_store import image_from_card, persist_sync
+from scraping.catalog_store import image_from_card, persist_sync, product_image
 
 
 def normalize_text(text):
@@ -69,11 +69,7 @@ def parse_html(html, url, captured_at=None):
                 continue
             if link in seen:
                 continue
-            image = product.get('image')
-            if isinstance(image, list):
-                image = image[0] if image else None
-            if isinstance(image, dict):
-                image = image.get('url') or image.get('contentUrl')
+            image = product_image(product.get('image'), url)
             stock = str(offer.get('availability', '')).endswith('/InStock')
             price, card_price, payment = str(offer['price']), None, None
             row = hydration.get(str(product.get('sku')))
@@ -102,7 +98,7 @@ def parse_html(html, url, captured_at=None):
         if not text:
             continue
         items.append(dict(nome=name.get_text(' ', strip=True), preco=text.replace(',', '.'),
-                          link=urljoin(url, anchor['href']), imagem_url=image_from_card(card, url),
+                          link=urljoin(url, anchor['href']), imagem_url=image_from_card(card, url, urljoin(url, anchor['href'])),
                           coletado_em=stamp, fonte_coleta='html_publico', fonte_url=url))
     return items
 
@@ -110,27 +106,16 @@ def parse_html(html, url, captured_at=None):
 def index(max_paginas=1):
     if not 1 <= max_paginas <= 5:
         raise ValueError('Limite de uma a cinco paginas')
-    # Dependencias do navegador so sao carregadas em coleta explicitamente solicitada.
-    from selenium import webdriver
-    from selenium.webdriver.chrome.service import Service
-    from webdriver_manager.chrome import ChromeDriverManager
-    options = webdriver.ChromeOptions()
-    options.add_argument('--headless')
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-    try:
-        for page in range(1, max_paginas + 1):
-            url = f'https://www.kabum.com.br/perifericos?page_number={page}&page_size=20'
-            driver.get(url)
-            time.sleep(3)
-            html = driver.page_source
-            if re.search(r'captcha|access denied|just a moment', driver.title, re.I):
-                raise ValueError('Pagina bloqueada; coleta interrompida')
-            items = parse_html(html, url)
-            if not items:
-                raise ValueError('Nenhum produto reconhecido; confira o markup')
-            persist_sync('KaBuM!', items)
-    finally:
-        driver.quit()
+    from scraping.public_sources import fetch_public_html
+    for page in range(1, max_paginas + 1):
+        url = f'https://www.kabum.com.br/perifericos?page_number={page}&page_size=20'
+        html, final_url, status, _ = fetch_public_html('KaBuM!', url, request_delay=3)
+        if status != 'ok':
+            raise ValueError('Coleta interrompida: ' + status)
+        items = parse_html(html, final_url)
+        if not items:
+            raise ValueError('Nenhum produto reconhecido; confira o markup')
+        persist_sync('KaBuM!', items)
 
 
 if __name__ == '__main__':
