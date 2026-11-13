@@ -1,0 +1,16 @@
+const { Resvg } = require('@resvg/resvg-js');
+const { writeFileSync } = require('node:fs');
+const { resolve } = require('node:path');
+
+// Radar vetorial simples, alinhado ao simbolo usado pela interface nativa.
+const mark = `<g fill="none" stroke="#18231d" stroke-width="38" stroke-linecap="round">
+  <circle cx="512" cy="512" r="265"/><circle cx="512" cy="512" r="160"/>
+  <circle cx="512" cy="512" r="55"/><path d="M512 512 745 279"/>
+  <path d="M512 205v48M512 771v48M205 512h48M771 512h48"/>
+</g><circle cx="380" cy="575" r="26" fill="#285a3e"/>`;
+const svg = background => `<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">${background ? '<rect width="1024" height="1024" fill="#e4fa66"/>' : ''}${mark}</svg>`;
+for (const [file, background] of [['icon.png', true], ['android-icon-foreground.png', false], ['android-icon-monochrome.png', false], ['splash-icon.png', false]]) {
+  writeFileSync(resolve(__dirname, '../assets', file), new Resvg(svg(background)).render().asPng());
+}
+writeFileSync(resolve(__dirname, '../assets/brand.svg'), svg(true));
+console.log('Hunter mobile icons generated.');

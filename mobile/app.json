@@ -1,0 +1,40 @@
+{
+  "expo": {
+    "name": "Hunter Mobile",
+    "slug": "hunter-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.hunter.mobile",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSAppTransportSecurity": {
+          "NSAllowsLocalNetworking": true
+        }
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#e4fa66",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "package": "com.hunter.mobile"
+    },
+    "plugins": [
+      "expo-secure-store",
+      "expo-font",
+      "expo-build-properties"
+    ],
+    "scheme": "hunter",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "backgroundColor": "#f5f6f0"
+  }
+}

@@ -3,6 +3,14 @@
 Sistema FastAPI/PostgreSQL com frontend HTML/CSS/JavaScript, autenticacao JWT,
 busca de ofertas, historico, alertas assincronos RabbitMQ e Data Mining exploratorio.
 
+## Aplicativo mobile
+
+O cliente nativo Android/iOS fica em [`mobile/`](mobile/README.md), com React Native,
+Expo e TypeScript. Usa a mesma API e o mesmo PostgreSQL da aplicação web.
+Na pasta `mobile`, execute `npm ci` e `npm start`; o guia explica a conexão por
+emulador, Wi-Fi ou USB e os testes. A branch de desenvolvimento é
+`feat/app-mobile-react-native`, baseada em `feat/coleta-multiloja-scrapling-stealth`.
+
 ## Instalar em outro computador (Windows e Linux)
 
 Requisitos: Git, Python **3.12**, Docker Engine/Desktop com containers Linux e
