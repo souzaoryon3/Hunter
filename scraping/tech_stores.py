@@ -178,9 +178,26 @@ def _fastshop_cards(page, url):
         match = re.fullmatch(r'R\$\s*([0-9.]+(?:,[0-9]{2})?)', amounts[0])
         if not match:
             continue
-        rows.append(dict(nome=' '.join(anchor.get_all_text().split()),
+        name = ' '.join(anchor.get_all_text().split())
+        image = _product_card_image(card, link, url)
+        if image is None:
+            # Fast Shop coloca a foto fora do link do titulo. Aceita apenas
+            # imagens marcadas do mesmo card e com descricao exata do produto.
+            candidates = set()
+            for photo in card.css('img[data-fs-product-card-image]'):
+                if photo.xpath('ancestor::button | ancestor::*[@role="button"]'):
+                    continue
+                if ' '.join(photo.attrib.get('alt', '').split()) != name:
+                    continue
+                raw = photo.attrib.get('data-src') or photo.attrib.get('src')
+                safe = product_image(raw, url)
+                if safe:
+                    candidates.add(safe)
+            if len(candidates) == 1:
+                image = candidates.pop()
+        rows.append(dict(nome=name,
                          preco=match[1].replace('.', '').replace(',', '.'), link=link,
-                         imagem_url=_product_card_image(card, link, url),
+                         imagem_url=image,
                          pagamento='A vista; consulte condicoes e CEP na loja',
                          coletado_em=datetime.now(timezone.utc), fonte_url=url,
                          fonte_coleta='scrapling_browser_card'))

@@ -109,3 +109,42 @@ Nao publicar o historico do repositorio original. Nenhum commit/push foi criado 
 - Validacoes pos-merge: 190 testes Python executados (124 aprovados, 66 ignorados); TypeScript e 12 testes mobile aprovados; lint mobile sem erros/20 avisos ja conhecidos; Ruff e qualidade Python/JS aprovados. Consultas psql de leitura confirmaram hunter_dev e migracoes ate 006 na instancia existente; CLI collect_sample --help aprovado. Nenhuma coleta, carga ou alteracao no banco foi executada nesta entrega.
 - Word gerado com dependencias gerenciadas, renderizado via LibreOffice para PDF/PNG e tres paginas revisadas visualmente; removida borda decorativa do titulo. Relatorios, renderizacoes e ferramentas auxiliares ficam em local-reports, ignorados. Instalacao em outro computador e teste fisico do app permanecem dependentes do ambiente do colaborador.
 - Arquivos adicionais desta entrega: README.md, mobile/README.md, CONTINUIDADE.md e docs/GUIA_COLABORADOR.docx. Commit documental e push da main autorizados pelo pedido de integracao; branches de origem mantidas.
+
+## Instalacao da main do colaborador em 12/11/2026
+- Lido GUIA_COLABORADOR.docx fornecido pelo usuario. Main remota atualizada em 0a244ab, com merges de scraping e mobile.
+- Clone separado em local-data/Hunter-main; instalacao original e bancos anteriores preservados. Sem commit ou push.
+- Criada configuracao ignorada .env.dev.main.local; stack independente hunter-dev-main em http://localhost:8088. Usar --instance main nos comandos scripts/dev.py configure/up/status/stop nesta copia.
+- Python 3.12.2 da venv original usado apenas para helper de biblioteca padrao; py -3.12 no sandbox nao encontrou instalacao. Docker build e dependencias concluidos.
+- Novo volume PostgreSQL hunter-dev-main_dev_postgres e RabbitMQ independente. Baseline inicializado e migracoes 002 a 006 confirmadas por SELECT; nenhum banco existente alterado.
+- Smoke do guia aprovado: frontend, cadastro/login, busca ficticia, alerta, scheduler/broker/worker, notificacao/leitura e Data Mining demo. CLI collect_peripherals --help aprovada sem coleta externa.
+- Dados reais e contas antigas nao foram transferidos; esta stack contem oferta DEMO FICTICIO e usuario/alerta do smoke. Coleta automatica desligada. Navegadores para coleta e mobile/APK nao preparados nesta etapa; sem nova captura/importacao de produtos.
+- Arquivos alterados: CONTINUIDADE.md nas duas copias e configuracao local ignorada na nova. Codigo clonado preservado. Nova copia deve ser usada como raiz no desenvolvimento da main.
+
+## Captura multiloja e teste da main em 12/11/2026
+- Coleta autorizada: scripts/collect_peripherals.py --target 50 --max-pages 5, transporte auto original, sem alterar fontes versionados. Relatorio UTC peripherals-20261113T014433544873Z.json (noite de 12/11 local).
+- Capturadas e importadas na stack hunter-dev-main: KaBuM! 50, Pichau 50, TerabyteShop 50, Amazon Brasil 50, Fast Shop 50. Total 250 produtos e 250 observacoes reais datadas.
+- Mercado Livre: zero, redirect para verificacao de conta. Magalu: zero, HTTP 403. GK InfoStore: zero, HTTP 423/loja indisponivel. Fontes interrompidas, sem insistencia/proxy/resolucao de desafios ou dados ficticios para completar metas.
+- Fast Shop: 50 ofertas sem imagem fornecida pelo parser; 200 ofertas das outras lojas com imagem. Interface usa placeholder explicito. Limitacao pendente para proxima etapa; nenhum URL de imagem inventado.
+- Instalados Chromium Patchright e bibliotecas Linux dentro do container API, cache /tmp/hunter-browsers. Instalacao e efemera: reconstruir/recriar o container exige preparar navegador novamente. Coleta automatica continua desligada.
+- Importacao por helper local ignorado local-reports/import_capture.py, reutilizando normalize/save_observations, guarda postgres/hunter_dev, transacao e lock; dados anteriores preservados. Primeira tentativa parou antes da conexao por exigir imagem em todas as ofertas; validacao ajustada para aceitar campo opcional conforme contrato existente.
+- Confirmados por SQL 50 produtos em cada uma das cinco lojas e 250 observacoes. Reimportacao do mesmo lote dentro da transacao adicionou zero observacoes; idempotencia aprovada.
+- Testes: 14 de perifericos + 20 de coleta aprovados; pip check sem conflitos; smoke_dev aprovado (login, busca demo, alerta, fila/notificacao, Data Mining). Verificacao HTTP e navegador real nas cinco lojas: busca/filtro, preco ascendente, datas e historico aprovados; desktop/mobile sem overflow e sem erros JavaScript. Capturas PNG revisadas.
+- Relatorios, JSON original, resultado de importacao, verificacao e screenshots em local-reports/capture-20261112; helpers import_capture.py e verify_capture.py em local-reports, ignorados pelo Git.
+- Arquivos versionados alterados apenas CONTINUIDADE.md (nova copia e registro na original); configuracoes/segredos nao expostos. Sem commit/push, DDL ou acesso ao banco antigo. Aplicacao atualizada em http://localhost:8088/index.html.
+
+## Correcao das imagens Fast Shop em 12/11/2026
+- Inspecao real da listagem publica identificou img[data-fs-product-card-image] fora do anchor do titulo. Helper generico exigia imagem dentro do link e descartava todas.
+- scraping/tech_stores.py agora aceita fallback apenas do mesmo card Fast Shop, imagem marcada, alt exatamente igual ao nome do produto e URL validada. Imagens de botoes, produto diferente ou multiplas URLs ambiguas rejeitadas; regras das demais lojas preservadas.
+- tests/test_peripherals.py inclui regressao de foto fora do link, nome diferente, botao de favorito e ambiguidade. 49 testes de perifericos/coleta/parsers aprovados. Nenhuma dependencia nova.
+- Recapturadas 50 ofertas Fast Shop: 50 imagens reconhecidas. Importadas como 50 NOVAS observacoes pelo helper validado, sem sobrescrever as anteriores. Banco permanece 250 produtos, agora 300 observacoes; consulta dos ultimos registros confirma 50 Fast Shop com imagem.
+- Reimportacao idempotente aprovada. Busca, filtro, ordenacao, historico, desktop/mobile e ausencia de erros JS aprovados; navegador confirmou carregamento de foto real. Smoke login/busca/alerta/fila/notificacao/Data Mining aprovado. Consulta auxiliar teve referencia id ambigua; corrigida com aliases e conferida por SELECT, sem escrita nessa consulta.
+- Correcao fonte copiada ao container API para coleta imediata; tambem permanece no checkout para proximos builds. Sem reconstruir container nesta etapa para preservar Chromium efemero ja instalado.
+- Mercado Livre (verificacao de conta), Magalu (403) e GK (423/indisponibilidade) continuam pendentes conforme diagnosticos reais anteriores; nao repetidas sondagens nem declarados corrigidos sem evidencia. Nao houve proxy ou resolucao de desafios.
+- Evidencias ignoradas em local-reports/fastshop-fix-20261112 (JSON, HTML diagnostico e screenshots); helper local verify_capture.py ampliado para verificar carregamento da foto.
+- Arquivos versionados alterados nesta etapa: scraping/tech_stores.py, tests/test_peripherals.py e CONTINUIDADE.md. Registro tambem adicionado a continuidade da instalacao original. Sem commit/push, DDL, exclusao de dados ou alteracao do banco antigo.
+
+## Publicacao da correcao na main em 12/11/2026
+- Usuario autorizou commit e push e escolheu integracao direta na main compartilhada; nao ha main separada por colaborador no remoto.
+- Fetch confirmou HEAD igual a origin/main antes da entrega (0a244ab). Correcao Fast Shop, teste de regressao e registros de continuidade revisados; 49 testes aprovados novamente e diff --check sem erros.
+- Somente scraping/tech_stores.py, tests/test_peripherals.py e CONTINUIDADE.md integram esta entrega. Configuracoes locais, segredos, dumps, relatorios e dados PostgreSQL permanecem fora do Git.
+- Atualizacao dos colaboradores: com alteracoes locais preservadas, git pull --ff-only origin main e reconstruir a stack existente com scripts/dev.py up e o mesmo --instance usado na configuracao. Nao regenerar senhas nem apagar volumes; Git sincroniza codigo, nao bancos locais.

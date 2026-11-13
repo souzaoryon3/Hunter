@@ -82,6 +82,20 @@ class StoreMarkupTests(unittest.TestCase):
         self.assertTrue(matches_category('Caixa de Som USB', 'caixa-de-som'))
 
 class BrowserStoreTests(unittest.TestCase):
+    def test_fastshop_unlinked_photo_must_identify_the_product(self):
+        from scraping.tech_stores import parse_html
+        base = 'https://site.fastshop.com.br/informatica-e-games/periferico'
+        photo = '<img data-fs-product-card-image="true" alt="Mouse Logitech" src="https://fastshopbr.vtexassets.com/arquivos/mouse.webp">'
+        html = '''<article data-fs-product-card="true">PHOTO
+        <h2 data-fs-product-card-title><a href="/mouse-logitech/p">Mouse Logitech</a></h2>
+        <div class="Installments"><p><span data-testid="price-value">R$ 90,00</span> a vista</p></div></article>'''
+        def image(markup):
+            return parse_html('Fast Shop', html.replace('PHOTO', markup), base)[0]['imagem_url']
+        self.assertEqual(image(photo), 'https://fastshopbr.vtexassets.com/arquivos/mouse.webp')
+        self.assertIsNone(image(photo.replace('alt="Mouse Logitech"', 'alt="Outro Produto"')))
+        self.assertIsNone(image('<button>' + photo + '</button>'))
+        self.assertIsNone(image(photo + photo.replace('mouse.webp', 'different.webp')))
+
     def test_fastshop_uses_visible_cash_price_instead_of_prime_or_installment(self):
         from scraping.tech_stores import parse_html
         html = '''<article data-fs-product-card="true"><h2 data-fs-product-card-title><a href="/mouse-logitech/p"><p>Mouse Logitech</p></a></h2>
