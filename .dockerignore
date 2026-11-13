@@ -56,5 +56,6 @@ local-reports/
 dist/
 CONTINUIDADE.md
 AGENTS.md
+mobile/
 *.enc
 transfers/

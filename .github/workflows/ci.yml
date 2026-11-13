@@ -8,6 +8,32 @@ on:
 permissions:
   contents: read
 jobs:
+  mobile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+      - name: Install mobile dependencies
+        working-directory: mobile
+        run: npm ci
+      - name: Typecheck and API client tests
+        working-directory: mobile
+        run: npm run check
+      - name: Check Expo dependencies
+        working-directory: mobile
+        run: npx expo install --check
+      - name: Bundle Android and iOS
+        working-directory: mobile
+        env:
+          EXPO_NO_TELEMETRY: '1'
+        run: npm run export:native
   validate:
     runs-on: ubuntu-latest
     timeout-minutes: 20

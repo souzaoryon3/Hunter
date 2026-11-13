@@ -8,13 +8,13 @@ import zipfile
 
 from audit_sharing import ROOT, candidates, git
 
-DIRECTORIES = {"backend", "catalog_expansion", "config", "data_mining", "docs", "frontend",
+DIRECTORIES = {"backend", "catalog_expansion", "config", "data_mining", "docs", "frontend", "mobile",
                "messaging", "migrations", "ops", "scraping", "scripts", "tests", ".github"}
 FILES = {".dockerignore", ".env.example", ".gitattributes", ".gitignore", "AGENTS.md", "LICENSE",
          "README.md", "CONTRIBUTING.md", "Dockerfile", "Dockerfile.test", "pyproject.toml",
          "requirements.txt", "requirements-dev.txt", "compose.yaml", "compose.app.yaml",
          "compose.dev.yaml", "compose.team-test.yaml", "compose.simulation.yaml", "app.py", "auth.py", "serve_frontend.py"}
-DENIED = {".git", ".secrets", "secrets", "__pycache__", "local-reports", "backups", "local-data", ".venv"}
+DENIED = {".git", ".secrets", "secrets", "__pycache__", "local-reports", "backups", "local-data", ".venv", "node_modules", ".expo", "dist", "web-build"}
 SUFFIXES = {".dpapi", ".pem", ".key", ".pfx", ".p12", ".crt", ".cer", ".der", ".dump", ".backup",
             ".bak", ".log", ".zip", ".sqlite", ".db", ".pyc", ".jks", ".keystore"}
 
@@ -23,7 +23,7 @@ def allowed(name):
     p = Path(name)
     if any(part in DENIED for part in p.parts) or p.suffix.lower() in SUFFIXES:
         return False
-    if p.name.startswith(".env") and name != ".env.example":
+    if p.name.startswith(".env") and name not in (".env.example", "mobile/.env.example"):
         return False
     if p.name in ("id_rsa", "id_ed25519") or p.name.startswith(("credentials", "service-account")):
         return False
