@@ -55,10 +55,8 @@ def tokens(text):
     return [w for w in words if w not in STOPWORDS and (len(w) > 1 or w.isdigit())]
 
 
-def analyze(text):
-    if not isinstance(text, str) or not text.strip() or len(text) > 500:
-        raise ValueError('Titulo deve ter entre 1 e 500 caracteres')
-    words = tokens(text)
+def matching_categories(words):
+    """Separa a regra tematica da limpeza e da montagem do resultado."""
     vocabulary = set(words)
     matched = [name for name, aliases in CATEGORIES.items() if vocabulary & aliases]
     if 'mousepad' in matched or ('mouse' in vocabulary and 'pad' in vocabulary):
@@ -69,7 +67,14 @@ def analyze(text):
             matched = [name for name in matched if name != 'mouse']
         if 'mousepad' not in matched:
             matched.append('mousepad')
-    matched.sort()
+    return sorted(matched)
+
+
+def analyze(text):
+    if not isinstance(text, str) or not text.strip() or len(text) > 500:
+        raise ValueError('Titulo deve ter entre 1 e 500 caracteres')
+    words = tokens(text)
+    matched = matching_categories(words)
     return {'normalized_text':' '.join(words), 'tokens':words,
             'keywords':[word for word, _ in Counter(words).most_common(8)],
             'category':matched[0] if len(matched) == 1 else 'multicategoria' if matched else 'outros',
