@@ -25,7 +25,11 @@ jobs:
         run: npm ci
       - name: Typecheck and API client tests
         working-directory: mobile
-        run: npm run check
+        shell: bash
+        run: |
+          mkdir -p ../local-reports/ci-mobile
+          set -o pipefail
+          npm run check 2>&1 | tee ../local-reports/ci-mobile/check.log
       - name: Check Expo dependencies
         working-directory: mobile
         run: npx expo install --check
@@ -34,6 +38,13 @@ jobs:
         env:
           EXPO_NO_TELEMETRY: '1'
         run: npm run export:native
+      - name: Preserve mobile test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-tests-${{ github.run_id }}-${{ github.run_attempt }}
+          path: local-reports/ci-mobile/check.log
+          retention-days: 30
   validate:
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -58,15 +69,31 @@ jobs:
       - name: Bootstrap isolated schema
         run: python -B -m messaging.testing
       - name: Unit and integration regression
-        run: python -B -m coverage run -m unittest discover -s tests -v
+        shell: bash
+        run: |
+          mkdir -p local-reports/ci
+          set -o pipefail
+          python -B -m coverage run -m unittest discover -s tests -v 2>&1 | tee local-reports/ci/tests.log
       - name: Coverage report
-        run: python -m coverage report
+        if: ${{ !cancelled() }}
+        shell: bash
+        run: |
+          set -o pipefail
+          python -m coverage report 2>&1 | tee local-reports/ci/coverage.txt
+          python -m coverage xml -o local-reports/ci/coverage.xml
+          python -m coverage json -o local-reports/ci/coverage.json
       - name: RabbitMQ delivery retry DLQ and idempotency
         run: python -B tests/demo_queue.py
       - name: Live analytics streaming and persisted results
-        run: python -B tests/demo_streaming.py
+        shell: bash
+        run: |
+          set -o pipefail
+          python -B tests/demo_streaming.py | tee local-reports/ci/demo-streaming.json
       - name: NLP broker pipeline and numerical integration
-        run: python -B tests/demo_nlp.py
+        shell: bash
+        run: |
+          set -o pipefail
+          python -B tests/demo_nlp.py | tee local-reports/ci/demo-nlp.json
       - name: Install isolated browser
         run: python -m playwright install --with-deps chromium
       - name: Browser regression and dashboard
@@ -78,3 +105,23 @@ jobs:
         run: docker build -t hunter-ci .
       - name: Build frontend image
         run: docker build -f frontend/Dockerfile -t hunter-frontend-ci .
+      - name: Summarize quality evidence
+        if: always()
+        run: python -B scripts/ci_summary.py
+      - name: Preserve test coverage and TDD evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hunter-quality-${{ github.run_id }}-${{ github.run_attempt }}
+          retention-days: 30
+          path: |
+            local-reports/ci/tests.log
+            local-reports/ci/coverage.txt
+            local-reports/ci/coverage.xml
+            local-reports/ci/coverage.json
+            local-reports/ci/summary.json
+            local-reports/ci/demo-streaming.json
+            local-reports/ci/demo-nlp.json
+            docs/evidence/tdd-combo/*.json
+            /tmp/hunter-nlp-desktop.png
+            /tmp/hunter-nlp-mobile.png

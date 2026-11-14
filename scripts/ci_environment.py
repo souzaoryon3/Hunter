@@ -27,6 +27,8 @@ def main():
     }
     values["HUNTER_TEST_DATABASE_URL"] = values["DATABASE_URL"]
     values["MIGRATION_DATABASE_URL"] = values["DATABASE_URL"]
+    for key in ("JWT_SECRET_KEY", "HUNTER_RABBIT_PASSWORD", "HUNTER_TEST_DB_PASSWORD"):
+        print("::add-mask::" + values[key])
     with Path(os.environ["GITHUB_ENV"]).open("a", encoding="utf-8") as stream:
         for key, value in values.items():
             stream.write(f"{key}={value}\n")

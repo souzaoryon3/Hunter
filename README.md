@@ -13,6 +13,10 @@ stopwords e classificacao por regras via RabbitMQ. Resultados em `/nlp/analises`
 sugestoes na busca e integracao em `/analytics/categorias`. Veja
 [implementacao, limites e provas](docs/PLN_AUTOCOMPLETE.md).
 
+Qualidade e TDD: [ciclo real RED/GREEN/REFACTOR e evidencias de CI](docs/TDD_QUALIDADE.md).
+O Actions preserva logs, cobertura XML/JSON, demos e capturas em artefatos por
+30 dias. Os registros TDD do caso mouse/mousepad ficam versionados no repositorio.
+
 ## Aplicativo mobile
 
 O cliente nativo Android/iOS fica em [`mobile/`](mobile/README.md), com React Native,

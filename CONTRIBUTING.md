@@ -23,3 +23,10 @@ Para auditar a copia com Git: python scripts/audit_sharing.py --history. Relator
 ficam ignorados em local-reports/ e nao contem valores detectados. O scanner e
 heuristico: revise os achados e nao trate sua ausencia como prova completa.
 Dados de teste nao devem ser apagados ou bancos limpos sem autorizacao.
+
+Para regras criticas novas ou correcoes, registrar o ciclo TDD quando adotado:
+especificar um teste observavel, executar e guardar a falha antes da mudanca,
+implementar o minimo, executar novamente e refatorar mantendo os testes aprovados.
+Separar esses passos em commits quando possivel. Testes escritos depois de uma
+implementacao sao evidencia de regressao, sem apresenta-los como TDD retroativo.
+Exemplo real e limites de comprovacao: docs/TDD_QUALIDADE.md.
