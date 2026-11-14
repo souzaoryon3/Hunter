@@ -62,7 +62,11 @@ def analyze(text):
     vocabulary = set(words)
     matched = [name for name, aliases in CATEGORIES.items() if vocabulary & aliases]
     if 'mousepad' in matched or ('mouse' in vocabulary and 'pad' in vocabulary):
-        matched = [name for name in matched if name != 'mouse']
+        standalone_mouse = any(word in CATEGORIES['mouse'] and
+            not (index+1 < len(words) and words[index+1] == 'pad')
+            for index, word in enumerate(words))
+        if not standalone_mouse:
+            matched = [name for name in matched if name != 'mouse']
         if 'mousepad' not in matched:
             matched.append('mousepad')
     matched.sort()

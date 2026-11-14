@@ -1,0 +1,15 @@
+{
+  "phase": "green",
+  "started_at_utc": "2026-11-14T05:47:32.842039+00:00",
+  "finished_at_utc": "2026-11-14T05:47:33.495011+00:00",
+  "head_before_record": "8e328d13ad3438d7ff3b3ac955208f685e4b5f28",
+  "python_version": "3.12.2",
+  "command": "python -B -m unittest discover -s tests -p test_nlp.py -k combo_preserves_separate_mouse_and_mousepad -v",
+  "exit_code": 0,
+  "output": "test_combo_preserves_separate_mouse_and_mousepad (test_nlp.TextAnalysisTests.test_combo_preserves_separate_mouse_and_mousepad) ... ok\n\n----------------------------------------------------------------------\nRan 1 test in 0.001s\n\nOK\n",
+  "sha256": {
+    "tests/test_nlp.py": "2c5bcecd7d9d2f17008c30f0fbe19e9070d8218e86f32b76eb1e5f5c68ada12a",
+    "nlp/analysis.py": "fd68a5491e5edf85686956970b8aa74ee753596f3c81b9e3e104e0cc58a5df58"
+  },
+  "scope": "Caso novo de combo mouse/mousepad; nao comprova TDD de funcionalidades anteriores."
+}
