@@ -11,6 +11,17 @@ ROOT = Path(__file__).resolve().parents[1]
 def main():
     directory = ROOT/'local-reports/ci'
     directory.mkdir(parents=True,exist_ok=True)
+    # Mascaramento do console GitHub nao sanitiza automaticamente arquivos tee.
+    sensitive = [os.environ.get(key,'') for key in
+                 ('JWT_SECRET_KEY','HUNTER_RABBIT_PASSWORD','HUNTER_TEST_DB_PASSWORD')]
+    for name in ('tests.log','coverage.txt','demo-streaming.json','demo-nlp.json'):
+        path = directory/name
+        if path.is_file():
+            content = path.read_text(encoding='utf-8',errors='replace')
+            for value in sensitive:
+                if value:
+                    content = content.replace(value,'[REDACTED]')
+            path.write_text(content,encoding='utf-8')
     tests = directory/'tests.log'
     text = tests.read_text(encoding='utf-8',errors='replace') if tests.is_file() else ''
     match = re.search(r'Ran (\d+) tests? in ([\d.]+)s',text)

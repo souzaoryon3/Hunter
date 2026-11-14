@@ -189,3 +189,11 @@ Nao publicar o historico do repositorio original. Nenhum commit/push foi criado 
 - Ciclo TDD real novo: 8e328d1 RED com teste de combo mouse/mousepad falhando; 1286f53 GREEN com correcao minima; c04b52d REFACTOR com regra extraida e mesmo teste aprovado. Evidencias com hashes/comandos/horarios em docs/evidence/tdd-combo; escopo restrito a esse caso, sem alegacao de TDD retroativo de todo o projeto.
 - CI preparada para guardar logs, cobertura XML/JSON, resumo por SHA/run, demos e capturas isoladas como artefatos com retencao de 30 dias. Segredos efemeros mascarados. Nenhum dump/arquivo de login da demo e enviado.
 - Documentacao em docs/TDD_QUALIDADE.md e fluxo em CONTRIBUTING.md. Regressao local atual e nova execucao remota serao conferidas antes do encerramento; nao ha resultado remoto das novas alteracoes neste registro.
+
+## Publicacao e CI comprovadas em 14/11/2026
+- Push normal autorizado publicou a main ate d59198c, incluindo streaming, PLN, autocomplete, ciclo TDD e artefatos CI. Sem force-push ou alteracao da instalacao original.
+- Actions 43563594614 concluido success no SHA d59198c1748f25ea9c479c7c2f618d6f552a4adf: validate e mobile aprovados. URL https://github.com/souzaoryon3/Hunter/actions/runs/43563594614.
+- Conferidos artefatos baixados: 218 testes backend/integracao sem skips em 12,666s; 2474/2969 linhas, 83,3277% de cobertura (minimo80). Mobile: 12 testes pass, zero falhas/skips, TypeScript/Expo/bundles Android/iOS aprovados. Demos e navegador passaram.
+- Artefatos hunter-quality-43563594614-1 e mobile-tests-43563594614-1, retencao30 dias. Registro selecionado permanente em docs/evidence/ci/run-43563594614.json; logs/ZIP privados em local-reports/ci-20261114. Antes da publicacao final, testes.log/demos sao sanitizados contra segredos efemeros, alem de mascaramento do console.
+- Correcao TDD do consumidor NLP ativada em imagem nova para novas analises; resultados historicos preservados. Testes locais finais:218 sem skips,83%; servicos de teste parados preservando volumes, aplicacao principal ativa.
+- docs/TDD_QUALIDADE.md documenta prova e limites: TDD comprovado para novo caso mouse/mousepad, nao todo legado; CI nao equivale a protecao de branch, teste fisico mobile ou deploy Azure. Relatorio final segue em commit de evidencias, que gerara nova execucao automatica.

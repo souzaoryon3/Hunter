@@ -39,8 +39,8 @@ verifica login, CRUD, busca, dashboard e autocomplete em desktop/celular.
 
 Coverage mede linhas dos pacotes Python configurados em pyproject.toml e exige
 80%. Nao mede cobertura total de frontend/mobile nem precisao estatistica de PLN.
-A ultima entrega anterior tinha 217 testes e 83%; o novo teste TDD aumenta a
-quantidade para 218, sujeita ao resultado da execucao registrada de CI.
+A execucao remota registrada aprovou 218 testes sem skips, em 12,666 segundos,
+com 2474 de 2969 linhas cobertas: 83,33%, acima do minimo de 80%.
 
 ## Integracao continua
 
@@ -60,8 +60,27 @@ continuam disponiveis apos expirar o artefato.
 Para comprovar a CI, apresentar a URL da execucao, SHA do commit, conclusao dos
 dois jobs e o artefato hunter-quality. O status do workflow nao significa que
 regras de protecao da main estejam habilitadas; essa configuracao e independente.
-O resultado remoto sera registrado apos a execucao efetiva, sem atribuir ao
-GitHub um resultado obtido somente no computador local.
+O resultado remoto abaixo foi registrado apos a execucao efetiva, sem atribuir
+ao GitHub um resultado obtido somente no computador local.
+
+## Execucao remota comprovada
+
+[Hunter CI 43563594614](https://github.com/souzaoryon3/Hunter/actions/runs/43563594614)
+concluiu com success para o commit d59198c1748f25ea9c479c7c2f618d6f552a4adf.
+Os jobs validate e mobile foram aprovados. A verificacao foi feita pela API
+GitHub e pelo download/leitura dos artefatos, incluindo o resumo de cobertura.
+Registro permanente selecionado em evidence/ci/run-43563594614.json.
+
+Artefatos: hunter-quality-43563594614-1 e mobile-tests-43563594614-1. A prova inclui
+testes, cobertura, demos, capturas e TDD; mobile passou em verificacao TypeScript,
+12 testes do cliente sem falhas/skips, compatibilidade Expo e bundles Android/iOS. O status nao
+comprova testes fisicos de aparelho, deploy Azure ou cliente desktop nativo.
+
+Para apresentar: abrir a execucao no GitHub, mostrar os dois jobs verdes,
+expandir Unit and integration regression/Coverage report e baixar hunter-quality.
+Depois abrir os commits RED/GREEN/REFACTOR e comparar os respectivos JSONs.
+Os arquivos versionados de evidencia permanecem disponiveis apos os 30 dias de
+retencao dos artefatos. Novos commits podem gerar execucoes adicionais na aba Actions.
 
 Arquivos desta etapa: teste e correcao/refatoracao em tests/test_nlp.py e
 nlp/analysis.py; scripts/tdd_evidence.py, scripts/ci_summary.py,
