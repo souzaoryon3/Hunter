@@ -30,6 +30,15 @@ class TextAnalysisTests(unittest.TestCase):
         self.assertEqual(set(result['matched_categories']), {'teclado','mouse'})
         self.assertEqual(analyze('Produto XPTO 123')['category'], 'outros')
 
+    def test_combo_preserves_separate_mouse_and_mousepad(self):
+        # Regressao: o acessorio mousepad nao pode apagar o mouse do mesmo kit.
+        for title in ('Kit teclado, mouse e mousepad', 'Mouse pad e mouse gamer'):
+            with self.subTest(title=title):
+                result = analyze(title)
+                self.assertEqual(result['category'], 'multicategoria')
+                self.assertIn('mouse', result['matched_categories'])
+                self.assertIn('mousepad', result['matched_categories'])
+
     def test_mousepad_and_models(self):
         self.assertEqual(analyze('Mouse pad gamer')['category'], 'mousepad')
         self.assertEqual(analyze('Mousepad XL')['category'], 'mousepad')
