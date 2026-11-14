@@ -1,5 +1,9 @@
 # Data Mining e dashboard do Hunter
 
+Atualizacao: existe tambem [mineracao orientada a eventos RabbitMQ](MINERACAO_STREAMING.md),
+com migracoes 007/008, consumidor independente e resultados persistidos. As secoes
+abaixo descrevem o modulo exploratorio sob demanda original, que permanece ativo.
+
 Implementado sem migracao nova. O modulo consulta a estrutura da 003 somente com
 SELECT e nao altera precos, alertas, notificacoes ou eventos do RabbitMQ.
 

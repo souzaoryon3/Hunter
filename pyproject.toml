@@ -6,7 +6,7 @@ exclude = [".venv", ".git", "__pycache__"]
 select = ["E9", "F63", "F7", "F82"]
 
 [tool.coverage.run]
-source = ["backend", "config", "messaging", "catalog_expansion", "data_mining", "scraping"]
+source = ["backend", "config", "messaging", "catalog_expansion", "data_mining", "nlp", "scraping"]
 omit = ["*/demo.py", "*/testing.py"]
 
 [tool.coverage.report]

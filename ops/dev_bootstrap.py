@@ -24,7 +24,7 @@ async def main():
         empty = not await conn.fetchval("SELECT EXISTS(SELECT 1 FROM pg_tables WHERE schemaname='public')")
         if empty:
             await ensure_base(conn)
-        for version in ("002", "003", "004", "005", "006"):
+        for version in ("002", "003", "004", "005", "006", "007", "008", "009"):
             await migrate(version)
         # Oferta ficticia para testar busca/alertas; nunca se passa por preco real.
         # O dashboard demo usa seu dataset em memoria, separado desta oferta.

@@ -1,5 +1,6 @@
 """Leitura parametrizada e limitada; sem DDL/DML ou dados legados sem data."""
-REAL_SOURCES = ('html_publico', 'http_publico', 'html_publico_jsonld', 'captura_publica', 'api_oficial_mercadolivre')
+REAL_SOURCES = ('html_publico', 'http_publico', 'html_publico_jsonld', 'captura_publica',
+                'api_oficial_mercadolivre', 'scrapling_browser_card', 'scrapling_public_card')
 MAX_ROWS = 20000
 
 

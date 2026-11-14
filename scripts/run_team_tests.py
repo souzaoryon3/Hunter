@@ -9,9 +9,12 @@ def main():
         ["-m", "ruff", "check", "."],
         ["-B", "-m", "coverage", "run", "-m", "unittest", "discover", "-s", "tests", "-v"],
         ["-m", "coverage", "report"],
+        ["-B", "tests/demo_streaming.py"],
+        ["-B", "tests/demo_nlp.py"],
         ["-B", "tests/demo_queue.py"],
         ["-B", "tests/browser_queue.py"],
         ["-B", "tests/browser_dashboard.py"],
+        ["-B", "tests/browser_nlp.py"],
     ]
     for args in commands:
         subprocess.run([sys.executable, *args], check=True)

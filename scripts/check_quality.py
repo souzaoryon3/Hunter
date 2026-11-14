@@ -17,6 +17,7 @@ def main():
         "messaging",
         "catalog_expansion",
         "data_mining",
+        "nlp",
         "scraping",
         "scripts",
         "ops",

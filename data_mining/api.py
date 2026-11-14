@@ -13,6 +13,22 @@ from data_mining.repository import observations
 def create_router(get_db):
     router=APIRouter(prefix='/analytics',tags=['Data Mining'])
 
+    @router.get('/streaming')
+    async def streaming_results(produto_id:int|None=Query(None,gt=0),
+                                limite:int=Query(20,ge=1,le=100),conn=Depends(get_db)):
+        """Resultados persistidos pelo consumidor RabbitMQ; nao executa mineracao."""
+        if not await conn.fetchval("SELECT to_regclass('hunter_analytics_results')"):
+            raise HTTPException(503,'Mineracao em streaming exige migracao 007.')
+        counts = await conn.fetch('''SELECT status,count(*) AS total
+            FROM hunter_analytics_events GROUP BY status''')
+        rows = await conn.fetch('''SELECT * FROM hunter_analytics_results
+            WHERE ($1::bigint IS NULL OR produto_id=$1)
+            ORDER BY processed_at DESC,observation_id DESC LIMIT $2''', produto_id, limite)
+        return {'tecnica':'janela deslizante de ate 20 observacoes por produto',
+                'estados_globais':{r['status']:r['total'] for r in counts},
+                'resultados':[dict(r) for r in rows],
+                'aviso':'Replay identifica historico anterior a ativacao. Sinais descritivos, sem previsao.'}
+
     async def dataset(conn,origin,days,product_id=None):
         if origin=='demo':
             cutoff=datetime.now(timezone.utc)-timedelta(days=days)

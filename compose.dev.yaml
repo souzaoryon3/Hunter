@@ -66,6 +66,14 @@ services:
   scheduler:
     <<: *runtime
     command: [python, -B, -m, messaging.scheduler]
+  analytics:
+    <<: *runtime
+    command: [python, -B, -m, data_mining.streaming]
+    restart: unless-stopped
+  nlp:
+    <<: *runtime
+    command: [python, -B, -m, nlp.streaming]
+    restart: unless-stopped
   frontend:
     build:
       context: .

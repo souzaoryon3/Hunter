@@ -3,6 +3,16 @@
 Sistema FastAPI/PostgreSQL com frontend HTML/CSS/JavaScript, autenticacao JWT,
 busca de ofertas, historico, alertas assincronos RabbitMQ e Data Mining exploratorio.
 
+Mineracao em streaming: consumidor RabbitMQ independente, janela deslizante e
+resultados persistidos em PostgreSQL. Veja [fluxo, migracao e evidencias](docs/MINERACAO_STREAMING.md).
+Na stack dev, o servico `analytics` inicia com os demais componentes; resultados
+podem ser consultados em `/analytics/streaming` pelo Swagger.
+
+PLN e autocomplete: titulos publicos passam por normalizacao, tokenizacao,
+stopwords e classificacao por regras via RabbitMQ. Resultados em `/nlp/analises`,
+sugestoes na busca e integracao em `/analytics/categorias`. Veja
+[implementacao, limites e provas](docs/PLN_AUTOCOMPLETE.md).
+
 ## Aplicativo mobile
 
 O cliente nativo Android/iOS fica em [`mobile/`](mobile/README.md), com React Native,

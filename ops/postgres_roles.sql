@@ -24,6 +24,12 @@ GRANT SELECT,INSERT,UPDATE ON hunter_alert_state,hunter_events,hunter_notificati
     hunter_catalog_runs,hunter_catalog_products,hunter_catalog_shops,
     hunter_collection_control,hunter_scheduler_heartbeat TO hunter_runtime;
 GRANT SELECT,INSERT ON hunter_processing_log,hunter_price_observations TO hunter_runtime;
+-- Apos aplicar 007; o trigger de observacoes usa os privilegios do runtime.
+GRANT SELECT,INSERT,UPDATE ON hunter_analytics_events TO hunter_runtime;
+GRANT SELECT,INSERT ON hunter_analytics_results TO hunter_runtime;
+-- Apos aplicar 009; nenhuma permissao sobre textos privados e necessaria.
+GRANT SELECT,INSERT,UPDATE ON hunter_nlp_events TO hunter_runtime;
+GRANT SELECT,INSERT ON hunter_text_results TO hunter_runtime;
 -- Gatilhos de usuarios atuais sao SECURITY INVOKER e gravam nesta auditoria.
 GRANT INSERT ON auditoria_usuarios TO hunter_runtime;
 DO $$ DECLARE item record; sequence_name text; BEGIN

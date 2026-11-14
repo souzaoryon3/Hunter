@@ -63,12 +63,17 @@ jobs:
         run: python -m coverage report
       - name: RabbitMQ delivery retry DLQ and idempotency
         run: python -B tests/demo_queue.py
+      - name: Live analytics streaming and persisted results
+        run: python -B tests/demo_streaming.py
+      - name: NLP broker pipeline and numerical integration
+        run: python -B tests/demo_nlp.py
       - name: Install isolated browser
         run: python -m playwright install --with-deps chromium
       - name: Browser regression and dashboard
         run: |
           python -B tests/browser_queue.py
           python -B tests/browser_dashboard.py
+          python -B tests/browser_nlp.py
       - name: Build application image
         run: docker build -t hunter-ci .
       - name: Build frontend image

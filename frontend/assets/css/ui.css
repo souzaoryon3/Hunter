@@ -169,6 +169,12 @@ min-width:0;
 flex:1;
 background:none;
 margin:0}
+.autocomplete-field{position:relative;flex:1;min-width:0}
+.autocomplete-field input{width:100%;box-sizing:border-box}
+.autocomplete-options{position:absolute;top:100%;left:0;right:0;z-index:30;margin:6px 0 0;padding:4px;list-style:none;background:white;border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);max-height:300px;overflow-y:auto}
+.autocomplete-options[hidden]{display:none}
+.autocomplete-options li{padding:10px 12px;cursor:pointer;overflow-wrap:anywhere;font-size:.95rem;color:var(--ink,#17212b)}
+.autocomplete-options li:hover,.autocomplete-options li[aria-selected="true"]{background:#e8f3ee;border-radius:6px}
 .hero-visual{
 height:410px;
 position:relative;

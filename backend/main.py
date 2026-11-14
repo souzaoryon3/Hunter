@@ -8,6 +8,7 @@ from backend.errors import database_error
 from backend.routes import accounts, alerts, feedback, notifications, products
 from config.settings import cors_origins
 from data_mining.api import create_router
+from nlp.api import create_router as create_nlp_router
 from backend.services.accounts import AccountError
 from fastapi.responses import JSONResponse
 
@@ -33,6 +34,7 @@ def create_app():
         notifications.router,
         products.router,
         create_router(get_db),
+        create_nlp_router(get_db),
     ):
         application.include_router(router)
 

@@ -52,14 +52,15 @@ class RotationTests(unittest.IsolatedAsyncioTestCase):
         self.source=await self.repo.create_source(self.marker,self.marker,'manual',['shop.example'],request_limit=6)
         await self.conn.execute('''UPDATE hunter_catalog_sources SET state='enabled',adapter='fixture',
             permission_reference='synthetic_isolated_test' WHERE id=$1''',self.source['id'])
-        await self.conn.execute("UPDATE hunter_collection_control SET next_round_at=clock_timestamp()-interval '1 second'")
+        # Margem evita depender de ajustes de relogio do host/VM durante a suite.
+        await self.conn.execute("UPDATE hunter_collection_control SET next_round_at=clock_timestamp()-interval '1 day'")
         self.config=CollectionSettings(enabled=True)
         self.calls=[]
         self.sleep_patch=patch('catalog_expansion.rotation.asyncio.sleep',new=self.advance_request_delay)
         self.sleep_patch.start();self.addCleanup(self.sleep_patch.stop)
 
     async def advance_request_delay(self,*args):
-        await self.conn.execute('UPDATE hunter_catalog_sources SET next_request_at=clock_timestamp() WHERE id=$1',self.source['id'])
+        await self.conn.execute("UPDATE hunter_catalog_sources SET next_request_at=clock_timestamp()-interval '1 day' WHERE id=$1",self.source['id'])
 
     async def add(self,index,source=None):
         return await self.repo.add((source or self.source)['id'],f'https://shop.example/{self.marker}/{index}',external_id=str(index))
@@ -75,15 +76,22 @@ class RotationTests(unittest.IsolatedAsyncioTestCase):
 
     async def test_more_than_six_oldest_due_and_restart_cooldown(self):
         rows=[await self.add(i) for i in range(8)]
-        await self.conn.execute('''UPDATE hunter_catalog_candidates SET next_attempt_at=
-            clock_timestamp()-interval '1 day'+id*interval '1 second' WHERE source_id=$1''',self.source['id'])
+        # Sequencias persistentes podem ultrapassar 86400; offsets usam posicao,
+        # mantendo todas as fixtures vencidas mesmo em banco de testes reutilizado.
+        await self.conn.execute('''WITH ordered AS (
+            SELECT id,row_number() OVER(ORDER BY id) AS position
+            FROM hunter_catalog_candidates WHERE source_id=$1)
+            UPDATE hunter_catalog_candidates c SET next_attempt_at=
+                clock_timestamp()-interval '1 day'+o.position*interval '1 second'
+            FROM ordered o WHERE c.id=o.id''',self.source['id'])
         result=await self.collect()
-        self.assertEqual(len(result),6)
+        self.assertEqual(len(result),6, msg=str(await self.conn.fetchrow('''SELECT
+            next_round_at,clock_timestamp() AS db_now FROM hunter_collection_control''')))
         self.assertEqual(self.calls,[r['id'] for r in rows[:6]])
         self.assertTrue(all(r['result']=='success' for r in result))
         self.assertEqual(await self.collect(),[])
         # Simula uma rodada posterior sem tocar historico.
-        await self.conn.execute("UPDATE hunter_collection_control SET next_round_at=clock_timestamp()")
+        await self.conn.execute("UPDATE hunter_collection_control SET next_round_at=clock_timestamp()-interval '1 day'")
         await self.conn.execute('''UPDATE hunter_catalog_sources SET window_started_at=clock_timestamp()-interval '7 hours'
             WHERE id=$1''',self.source['id'])
         self.assertEqual(len(await self.collect()),2)

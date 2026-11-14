@@ -3,6 +3,7 @@
     'use strict';
     const {$, element, notify, safeNext, loginURL, token, storeToken, request, busy, confirmAction, empty, safeProductLink, currency, date, getProfile, setProfile} = window.HunterUI;
     function initSearch() {
+        window.HunterAutocomplete?.attach($('productName'), () => $('searchForm').requestSubmit());
         const ids = ['productName', 'minPrice', 'maxPrice', 'storeFilter', 'sortOrder', 'shippingFilter'];
         const keys = ['q', 'min', 'max', 'loja', 'ordem', 'frete'];
         const query = new URLSearchParams(location.search);

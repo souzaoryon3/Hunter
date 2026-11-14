@@ -4,6 +4,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
 
 # Diretório de trabalho dentro do container
 WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends libatomic1 && rm -rf /var/lib/apt/lists/*
 
 # Copia somente o requirements primeiro (melhora o cache)
 COPY requirements.txt /app/

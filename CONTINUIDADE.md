@@ -148,3 +148,37 @@ Nao publicar o historico do repositorio original. Nenhum commit/push foi criado 
 - Fetch confirmou HEAD igual a origin/main antes da entrega (0a244ab). Correcao Fast Shop, teste de regressao e registros de continuidade revisados; 49 testes aprovados novamente e diff --check sem erros.
 - Somente scraping/tech_stores.py, tests/test_peripherals.py e CONTINUIDADE.md integram esta entrega. Configuracoes locais, segredos, dumps, relatorios e dados PostgreSQL permanecem fora do Git.
 - Atualizacao dos colaboradores: com alteracoes locais preservadas, git pull --ff-only origin main e reconstruir a stack existente com scripts/dev.py up e o mesmo --instance usado na configuracao. Nao regenerar senhas nem apagar volumes; Git sincroniza codigo, nao bancos locais.
+
+## Encerramento em 12/11/2026
+- A pedido do usuario, parados os dez containers Hunter ativos (main, simulacao e RabbitMQ original) com docker stop, preservando containers e volumes.
+- Encerrados API, frontend, worker e scheduler locais identificados no inventario HunterRuntime, incluindo processos Python filhos.
+- Verificacao: docker ps sem containers ativos e nenhuma porta em escuta em 5500, 8000 ou 8088. Sem exclusao de dados, alteracao de codigo, commit ou push.
+- Arquivos alterados nesta tarefa: apenas CONTINUIDADE.md nas duas copias. Testes funcionais nao executados por se tratar de encerramento; verificacao operacional concluida.
+- Retomar amanha em local-data/Hunter-main; iniciar a stack pelo helper scripts/dev.py up --instance main com o ambiente Python existente. Pendencias de desenvolvimento registradas acima permanecem.
+
+## Inicializacao local em 14/11/2026
+- Retomada autorizada da nova versao local-data/Hunter-main; Git conferido, com alteracao preexistente apenas em CONTINUIDADE.md, preservada.
+- Docker Desktop iniciado e seis containers existentes hunter-dev-main retomados, sem rebuild, bootstrap ou migracoes. Volumes e dados preservados; instalacao original nao iniciada.
+- PostgreSQL, RabbitMQ, API e frontend healthy; worker conectado e scheduler com ciclos concluidos. Falhas AMQP transitorias durante partida resolvidas automaticamente pela reconexao.
+- HTTP 200 em index.html, buscar.html, docs, health/ready e analytics/estatisticas?origem=demo. Aplicacao em http://localhost:8088/index.html.
+- Coleta externa permanece desligada. Nenhuma alteracao de codigo, commit, push ou exclusao de dados. Apenas este CONTINUIDADE.md atualizado; suite completa nao repetida por se tratar de inicializacao operacional.
+
+## Mineracao em streaming em 14/11/2026
+- Implementado consumidor continuo independente data_mining.streaming, fila hunter_dev.analytics e DLQ separadas dos alertas. Trigger/outbox transacionais por nova observacao, publicacao confirmada, ACK apos commit, retry limitado e resultados idempotentes por observation_id.
+- Tecnica: janela deslizante por contagem de ate 20 observacoes, media/min/max, variacao, queda >=5% e z-score contra baseline anterior com criterios de suficiencia. Consulta dos resultados persistidos em GET /analytics/streaming; K-Means e endpoints anteriores preservados.
+- Backup privado ignorado antes de DDL. Migracoes incrementais 007/008 aplicadas na nova instancia, sem modificar migracoes existentes. 008 inclui fontes scrapling_browser_card/scrapling_public_card, tambem reconhecidas pelo Data Mining anterior.
+- Conferencia: 250 produtos e 300 observacoes preservados; 300 eventos processed e 300 resultados replay=true. Um consumidor ativo na fila analitica, sem backlog nem DLQ. Nenhuma coleta externa ou fixture sintetica inserida no banco da aplicacao.
+- Validacao final: 205 testes sem skips, cobertura global 83%, Ruff/diff --check/builds aprovados; demo com processo consumidor independente recebeu 100->80, persistiu dois resultados novos replay=false e resistiu a duplicata. Regressao RabbitMQ e navegador desktop/mobile aprovada no isolado. HTTP 200 em frontend/docs/ready/streaming/estatisticas real/demo.
+- Corrigidos libatomic1 nas imagens e fixture antiga de rotacao sensivel a IDs/relogio; sem mudar regras de coleta. CI inclui demo streaming, execucao remota nao verificada. Sem commit/push.
+- API atualizada por copia/reinicio para preservar Chromium efemero; analytics usa imagem nova. Mudancas fonte e bootstrap/Compose permitem proximos builds. Servicos da aplicacao permanecem ativos; testes parados preservando volumes.
+- Relatorio com inventario completo, limites e evidencias: docs/VALIDACAO_STREAMING.md. Roteiro de prova: docs/MINERACAO_STREAMING.md. Logs e JSON ignorados: local-reports/streaming-20261114. Configuracoes novas de teste ignoradas; segredos nao documentados.
+- Apenas a copia local-data/Hunter-main foi alterada. Instalacao original preservada. Proximas etapas PLN/desktop/Azure nao iniciadas.
+
+## PLN e autocomplete em 14/11/2026
+- Conferencia encontrou somente autocomplete nativo de formularios, sem sugestoes de produtos. Implementado PLN de titulos publicos em nlp: limpeza HTML, normalizacao Unicode/acentos, tokens, stopwords portugues, palavras-chave e classificacao tematica por regras explicitas; algoritmo titulo-regras-pt-v1. Sem modelo treinado ou processamento de feedback privado.
+- Migracao incremental 009 adiciona hunter_nlp_events/hunter_text_results e trigger/outbox atomicos. Fila hunter_dev.nlp e DLQ com consumidor independente; infraestrutura de streaming compartilhada com parametros restritos e contratos anteriores preservados.
+- Novas rotas /nlp/analises, /sugestoes e /analytics/categorias associam texto e resultado numerico do mesmo evento. Autocomplete na home/busca com teclado, debounce, cancelamento, protecao contra resposta atrasada/XSS e falha sem bloquear busca livre.
+- Validacao: 217 testes sem skips, cobertura global 83%; demo com processos independentes, banco/broker reais e fixture isolada replay=false comprovou texto e mineracao integrados/idempotentes. Regressao anterior e navegador desktop/mobile aprovados. Ruff, sintaxe Python/JS, builds e diff --check aprovados; CI atualizada, execucao remota nao verificada.
+- Instalacao: backup privado ignorado antes da 009. 250 produtos, 300 observacoes e 300 resultados numericos preservados; 300 resultados PLN replay=true. Consumidor nlp ativo, backlog/DLQ vazios. Proxy Nginx ajustado para novas rotas, nginx -t e navegacao instalada via Edge headless aprovados. API copiada/reiniciada para preservar Chromium efemero; frontend/nlp em imagens novas.
+- Evidencias JSON/logs/capturas reais revisadas em local-reports/nlp-20261114, ignorado. Documento com roteiro, limites e inventario: docs/PLN_AUTOCOMPLETE.md. Relatorio global de linhas nao equivale a precisao do classificador; avaliacao em corpus real rotulado permanece futura.
+- Apenas nova copia alterada; instalacao original preservada. Sem coleta externa, exclusao de dados, commit/push ou implementacao de desktop/Azure. Servicos da aplicacao permanecem ativos; containers de teste parados, volumes preservados.
