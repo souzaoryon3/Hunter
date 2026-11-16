@@ -10,6 +10,7 @@ from config.settings import cors_origins
 from data_mining.api import create_router
 from nlp.api import create_router as create_nlp_router
 from backend.services.accounts import AccountError
+from cloud.telemetry import instrument_fastapi
 from fastapi.responses import JSONResponse
 
 
@@ -54,6 +55,8 @@ def create_app():
             raise HTTPException(503, "Esquema ainda nao preparado.")
         return {"status": "ready"}
 
+    # Application Insights somente com APPLICATIONINSIGHTS_CONNECTION_STRING definido.
+    instrument_fastapi(application)
     return application
 
 

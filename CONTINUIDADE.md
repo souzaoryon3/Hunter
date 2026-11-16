@@ -197,3 +197,26 @@ Nao publicar o historico do repositorio original. Nenhum commit/push foi criado 
 - Artefatos hunter-quality-43563594614-1 e mobile-tests-43563594614-1, retencao30 dias. Registro selecionado permanente em docs/evidence/ci/run-43563594614.json; logs/ZIP privados em local-reports/ci-20261114. Antes da publicacao final, testes.log/demos sao sanitizados contra segredos efemeros, alem de mascaramento do console.
 - Correcao TDD do consumidor NLP ativada em imagem nova para novas analises; resultados historicos preservados. Testes locais finais:218 sem skips,83%; servicos de teste parados preservando volumes, aplicacao principal ativa.
 - docs/TDD_QUALIDADE.md documenta prova e limites: TDD comprovado para novo caso mouse/mousepad, nao todo legado; CI nao equivale a protecao de branch, teste fisico mobile ou deploy Azure. Relatorio final segue em commit de evidencias, que gerara nova execucao automatica.
+
+## 2026-11-16 - Atualizacao da main local (0a244ab -> 07905f8)
+
+- Release de restauracao publicada antes da atualizacao: tag hunter-pre-update-20261116 no commit 0a244ab, apenas codigo-fonte, sem backup de banco, credenciais ou chaves; nao marcada como Latest.
+- origin/main validada em worktree temporario antes do pull; pull fast-forward de 7 commits (mineracao streaming, PLN/autocomplete, evidencias TDD/CI, imagens Fast Shop).
+- Validacao apos o pull (.venv, Python 3.11): Ruff e check_quality aprovados; unittest discover -s tests: 218 executados, OK, 81 ignorados por dependerem de PostgreSQL/RabbitMQ de teste. Docker Desktop parado, integracao local nao executada; CI GitHub 43564094545 aprovado com integracao no mesmo commit.
+- Migracoes autorizadas pelo operador e aplicadas no hunter_dev da stack hunter-dev-scrapling. Backup previo pg_dump -Fc em local-reports/backup-hunter_dev-pre-007-20261116.dump (ignorado; 20 tabelas com dados, listagem pg_restore conferida).
+- Aplicacao via .venv\Scripts\python.exe -B scripts/dev.py up --instance scrapling: imagens reconstruidas, bootstrap aplicou 007, 008 e 009 sem remover dados; servicos novos analytics e nlp iniciados e saudaveis.
+- Verificacao: hunter_schema_migrations 002-009; 253 observacoes e 252 produtos preservados; replay concluido com 253 eventos analytics e 253 eventos PLN processados, 253 resultados em cada tabela. /health/ready, /sugestoes?q=mouse, /analytics/categorias e /nlp/analises retornaram 200 em http://localhost:18088.
+- ops/postgres_roles.sql nao aplicado: a stack dev usa o proprietario hunter_dev e os grupos hunter_runtime/hunter_migrator nao existem nesse banco; grants so se aplicam a ambientes com papeis minimos.
+- Sem commit ou push de codigo nesta etapa.
+
+## 2026-11-16 - Integracao Azure para entrega academica (branch feat/azure-entrega)
+
+- Branch feat/azure-entrega criada a partir da main 07905f8. Integracao opcional: sem .env.azure.local nada muda na stack.
+- Codigo novo: modulo cloud/ (config, mensagens, storage Blob/Queue, worker de exportacao, telemetria OpenTelemetry), scripts/azure_backup.py, tests/test_cloud.py, docs/AZURE.md, infra/azure/ (provision.ps1, lifecycle-policy.json, workbook.json). Alterados: backend/main.py (instrumentacao condicional), compose.dev.yaml (APPLICATIONINSIGHTS e servico azure-export no perfil azure), scripts/dev.py (inclui .env.azure.local e perfil azure quando existir), requirements.txt (azure-storage-blob 12.31.1, azure-storage-queue 12.18.1, azure-monitor-opentelemetry 1.8.12).
+- Azure CLI instalada (winget) e autenticada por device code na assinatura Azure for Students. Politica da assinatura permite somente eastus, centralus, northcentralus, southcentralus e mexicocentral; usado eastus.
+- Recursos em rg-hunter-entrega: storage sthunter26143 (ZRS, TLS 1.2, sem acesso publico, versionamento, soft delete 14 d, ciclo de vida), containers backups/exportacoes, filas hunter-exportacoes(-poison), Log Analytics law-hunter (30 d, 0,5 GB/dia), Application Insights appi-hunter, 3 alertas de metrica e workbook "Hunter - Monitoramento do ambiente". VM provap2 de outro trabalho permaneceu desalocada e nao foi usada.
+- Incidente: o cmd do Windows ecoou a connection string do Storage no log da sessao; as duas chaves foram rotacionadas e .env.azure.local atualizado sem exibir valores. Docs orientam usar --auth-mode key.
+- Testes: 228 testes Python OK (81 ignorados por integracao), 10 novos; Ruff e check_quality aprovados. Azure: 2 backups (24 tabelas) enviados e verificados com SHA-256 e pg_restore; 3 exportacoes (252 produtos) via fila; mensagem invalida desviada para poison; telemetria da API (requisicoes, 422 propositais, latencia) visivel no Application Insights e no workbook.
+- Correcao: amostragem fixada em 100% (sampling_ratio=1.0); o padrao limitava por segundo e perdia rajadas. Logs HTTP do SDK silenciados.
+- Documento ABNT (22 paginas, capturas do portal) em local-reports/azure/Hunter_Azure_ABNT.docx/.pdf, ignorado pelo Git por conter o e-mail da conta nas capturas; geradores em local-reports/azure/gerador. Campos de identificacao (instituicao, curso, aluno, professor, cidade) ficaram entre colchetes para preenchimento.
+- Pendente: commit/push da branch (nao autorizados); agendamento diario do backup (descrito, nao agendado); excluir rg-hunter-entrega ao fim da disciplina.

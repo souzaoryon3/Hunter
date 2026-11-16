@@ -62,3 +62,6 @@ curl_cffi==0.17.0
 browserforge==1.2.4
 apify-fingerprint-datapoints==0.15.0
 patchright==1.64.4
+azure-storage-blob==12.31.1
+azure-storage-queue==12.18.1
+azure-monitor-opentelemetry==1.8.12

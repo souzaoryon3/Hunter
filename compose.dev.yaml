@@ -12,6 +12,8 @@ x-runtime: &runtime
     HUNTER_COLLECTION_ENABLED: '0'
     HUNTER_QUEUE_PREFIX: hunter_dev
     HUNTER_SCAN_SECONDS: '2'
+    # Opcional (.env.azure.local): vazio mantem a telemetria desligada.
+    APPLICATIONINSIGHTS_CONNECTION_STRING: ${AZURE_APPINSIGHTS_CONNECTION_STRING:-}
   depends_on:
     bootstrap:
       condition: service_completed_successfully
@@ -74,6 +76,15 @@ services:
     <<: *runtime
     command: [python, -B, -m, nlp.streaming]
     restart: unless-stopped
+  azure-export:
+    # Ativado por scripts/dev.py somente quando .env.azure.local existe.
+    <<: *runtime
+    profiles: [azure]
+    command: [python, -B, -m, cloud.export_worker]
+    restart: on-failure
+    environment:
+      <<: *environment
+      AZURE_STORAGE_CONNECTION_STRING: ${AZURE_STORAGE_CONNECTION_STRING:-}
   frontend:
     build:
       context: .

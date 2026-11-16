@@ -1,0 +1,31 @@
+{
+  "rules": [
+    {
+      "enabled": true,
+      "name": "backups-retencao",
+      "type": "Lifecycle",
+      "definition": {
+        "filters": { "blobTypes": ["blockBlob"], "prefixMatch": ["backups/"] },
+        "actions": {
+          "baseBlob": {
+            "tierToCool": { "daysAfterModificationGreaterThan": 7 },
+            "delete": { "daysAfterModificationGreaterThan": 90 }
+          },
+          "version": { "delete": { "daysAfterCreationGreaterThan": 30 } }
+        }
+      }
+    },
+    {
+      "enabled": true,
+      "name": "exportacoes-retencao",
+      "type": "Lifecycle",
+      "definition": {
+        "filters": { "blobTypes": ["blockBlob"], "prefixMatch": ["exportacoes/"] },
+        "actions": {
+          "baseBlob": { "delete": { "daysAfterModificationGreaterThan": 30 } },
+          "version": { "delete": { "daysAfterCreationGreaterThan": 7 } }
+        }
+      }
+    }
+  ]
+}

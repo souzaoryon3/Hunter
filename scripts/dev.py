@@ -64,6 +64,11 @@ def main():
            if not k.startswith(("DEV_", "COMPOSE_"))}
     command = ["docker", "compose", "--project-name", "hunter-dev" + suffix, "--env-file", str(config_file),
                "-f", str(ROOT / "compose.dev.yaml")]
+    azure_file = ROOT / ".env.azure.local"
+    if azure_file.is_file():
+        # Integracao Azure opcional: segredos em arquivo ignorado, worker no perfil azure.
+        command[6:6] = ["--env-file", str(azure_file)]
+        env["COMPOSE_PROFILES"] = "azure"
     actions = {"up": ["up", "-d", "--build", "--wait"], "stop": ["stop"],
                "status": ["ps"], "check": ["config", "--quiet"]}
     subprocess.run(command + actions[args.action], cwd=ROOT, env=env, check=True)

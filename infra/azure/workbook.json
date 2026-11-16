@@ -1,0 +1,238 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "appInsightsId": { "type": "string" },
+    "storageAccountId": { "type": "string" },
+    "workspaceId": { "type": "string" },
+    "workbookName": { "type": "string", "defaultValue": "Hunter - Monitoramento do ambiente" }
+  },
+  "variables": {
+    "ws": "microsoft.operationalinsights/workspaces",
+    "content": {
+      "version": "Notebook/1.0",
+      "items": [
+        {
+          "type": 1,
+          "name": "titulo",
+          "content": {
+            "json": "# Hunter - Monitoramento do ambiente\nAPI FastAPI (Docker local) instrumentada com OpenTelemetry -> Application Insights. Azure Blob Storage (backups e exportacoes) e Queue Storage (fila hunter-exportacoes) com logs de diagnostico no Log Analytics."
+          }
+        },
+        {
+          "type": 9,
+          "name": "parametros",
+          "content": {
+            "version": "KqlParameterItem/1.0",
+            "parameters": [
+              {
+                "id": "6f0e3d5c-1f5d-4a43-9d0a-2b1c3e4f5a60",
+                "version": "KqlParameterItem/1.0",
+                "name": "Periodo",
+                "label": "Periodo",
+                "type": 4,
+                "isRequired": true,
+                "value": { "durationMs": 86400000 },
+                "typeSettings": {
+                  "selectableValues": [
+                    { "durationMs": 3600000 },
+                    { "durationMs": 14400000 },
+                    { "durationMs": 86400000 },
+                    { "durationMs": 604800000 }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": 3,
+          "name": "kpis",
+          "content": {
+            "version": "KqlItem/1.0",
+            "title": "Resumo da API",
+            "query": "let r = AppRequests;\nunion\n (r | summarize Valor=tostring(count()) | extend Indicador='Requisicoes', Ordem=1),\n (r | summarize Valor=tostring(countif(Success == false)) | extend Indicador='Falhas', Ordem=2),\n (r | summarize Valor=strcat(round(100.0 * countif(Success == true) / count(), 2), ' %') | extend Indicador='Disponibilidade', Ordem=3),\n (r | summarize Valor=strcat(round(percentile(DurationMs, 95), 0), ' ms') | extend Indicador='Latencia p95', Ordem=4)\n| order by Ordem asc",
+            "size": 4,
+            "timeContextFromParameter": "Periodo",
+            "queryType": 0,
+            "resourceType": "[variables('ws')]",
+            "crossComponentResources": [ "[parameters('workspaceId')]" ],
+            "visualization": "tiles",
+            "tileSettings": {
+              "showBorder": true,
+              "titleContent": { "columnMatch": "Indicador" },
+              "leftContent": { "columnMatch": "Valor" }
+            }
+          }
+        },
+        {
+          "type": 3,
+          "name": "requisicoes",
+          "customWidth": "50",
+          "content": {
+            "version": "KqlItem/1.0",
+            "title": "Requisicoes por resultado (5 min)",
+            "query": "AppRequests\n| summarize count() by bin(TimeGenerated, 5m), Resultado=iif(Success, 'sucesso', 'falha')",
+            "size": 0,
+            "timeContextFromParameter": "Periodo",
+            "queryType": 0,
+            "resourceType": "[variables('ws')]",
+            "crossComponentResources": [ "[parameters('workspaceId')]" ],
+            "visualization": "timechart"
+          }
+        },
+        {
+          "type": 3,
+          "name": "latencia",
+          "customWidth": "50",
+          "content": {
+            "version": "KqlItem/1.0",
+            "title": "Latencia da API (p50 / p95, ms)",
+            "query": "AppRequests\n| summarize p50=percentile(DurationMs, 50), p95=percentile(DurationMs, 95) by bin(TimeGenerated, 5m)",
+            "size": 0,
+            "timeContextFromParameter": "Periodo",
+            "queryType": 0,
+            "resourceType": "[variables('ws')]",
+            "crossComponentResources": [ "[parameters('workspaceId')]" ],
+            "visualization": "timechart"
+          }
+        },
+        {
+          "type": 3,
+          "name": "rotas",
+          "customWidth": "50",
+          "content": {
+            "version": "KqlItem/1.0",
+            "title": "Rotas mais usadas",
+            "query": "AppRequests\n| summarize Requisicoes=count(), Falhas=countif(Success == false), P95_ms=round(percentile(DurationMs, 95), 0) by Rota=Name\n| top 10 by Requisicoes",
+            "size": 0,
+            "timeContextFromParameter": "Periodo",
+            "queryType": 0,
+            "resourceType": "[variables('ws')]",
+            "crossComponentResources": [ "[parameters('workspaceId')]" ],
+            "visualization": "table"
+          }
+        },
+        {
+          "type": 3,
+          "name": "excecoes",
+          "customWidth": "50",
+          "content": {
+            "version": "KqlItem/1.0",
+            "title": "Excecoes por tipo",
+            "query": "AppExceptions\n| summarize Ocorrencias=count() by Tipo=ExceptionType, Servico=AppRoleName\n| top 10 by Ocorrencias",
+            "size": 0,
+            "timeContextFromParameter": "Periodo",
+            "queryType": 0,
+            "resourceType": "[variables('ws')]",
+            "crossComponentResources": [ "[parameters('workspaceId')]" ],
+            "visualization": "table",
+            "noDataMessage": "Nenhuma excecao no periodo."
+          }
+        },
+        {
+          "type": 3,
+          "name": "fila",
+          "customWidth": "50",
+          "content": {
+            "version": "KqlItem/1.0",
+            "title": "Queue Storage - pedidos de exportacao",
+            "query": "AppTraces\n| where Message in ('Pedido publicado na fila', 'Exportacao concluida', 'Falha na exportacao; nova tentativa pela fila', 'Mensagem movida para poison apos tentativas', 'Mensagem invalida movida para poison')\n| summarize count() by bin(TimeGenerated, 15m), Evento=Message",
+            "size": 0,
+            "timeContextFromParameter": "Periodo",
+            "queryType": 0,
+            "resourceType": "[variables('ws')]",
+            "crossComponentResources": [ "[parameters('workspaceId')]" ],
+            "visualization": "barchart"
+          }
+        },
+        {
+          "type": 3,
+          "name": "backups",
+          "customWidth": "50",
+          "content": {
+            "version": "KqlItem/1.0",
+            "title": "Blob Storage - backups e exportacoes gerados",
+            "query": "AppTraces\n| where Message in ('Backup enviado ao Blob', 'Backup verificado', 'Exportacao concluida', 'Operacao de backup falhou')\n| project Horario=TimeGenerated, Evento=Message, Blob=tostring(Properties.blob), Bytes=tolong(Properties.bytes), Tabelas=tostring(Properties.tabelas), Produtos=tostring(Properties.produtos)\n| order by Horario desc",
+            "size": 0,
+            "timeContextFromParameter": "Periodo",
+            "queryType": 0,
+            "resourceType": "[variables('ws')]",
+            "crossComponentResources": [ "[parameters('workspaceId')]" ],
+            "visualization": "table"
+          }
+        },
+        {
+          "type": 3,
+          "name": "storage-operacoes",
+          "customWidth": "50",
+          "content": {
+            "version": "KqlItem/1.0",
+            "title": "Operacoes no Storage (Blob e Queue)",
+            "query": "union StorageBlobLogs, StorageQueueLogs\n| summarize count() by bin(TimeGenerated, 15m), Servico=iif(Type == 'StorageBlobLogs', 'Blob', 'Queue')",
+            "size": 0,
+            "timeContextFromParameter": "Periodo",
+            "queryType": 0,
+            "resourceType": "[variables('ws')]",
+            "crossComponentResources": [ "[parameters('workspaceId')]" ],
+            "visualization": "timechart"
+          }
+        },
+        {
+          "type": 3,
+          "name": "storage-saude",
+          "customWidth": "50",
+          "content": {
+            "version": "KqlItem/1.0",
+            "title": "Saude do Storage por operacao",
+            "query": "union StorageBlobLogs, StorageQueueLogs\n| summarize Total=count(), Erros=countif(toint(StatusCode) >= 400), Latencia_ms=round(avg(DurationMs), 1) by Operacao=OperationName\n| order by Total desc",
+            "size": 0,
+            "timeContextFromParameter": "Periodo",
+            "queryType": 0,
+            "resourceType": "[variables('ws')]",
+            "crossComponentResources": [ "[parameters('workspaceId')]" ],
+            "visualization": "table"
+          }
+        },
+        {
+          "type": 3,
+          "name": "metricas",
+          "content": {
+            "version": "KqlItem/1.0",
+            "title": "Metricas customizadas do Hunter",
+            "query": "AppMetrics\n| where Name startswith 'hunter_'\n| summarize Valor=sum(Sum) by bin(TimeGenerated, 15m), Name",
+            "size": 0,
+            "timeContextFromParameter": "Periodo",
+            "queryType": 0,
+            "resourceType": "[variables('ws')]",
+            "crossComponentResources": [ "[parameters('workspaceId')]" ],
+            "visualization": "barchart"
+          }
+        }
+      ],
+      "fallbackResourceIds": [ "[parameters('appInsightsId')]" ]
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Insights/workbooks",
+      "apiVersion": "2022-04-01",
+      "name": "[guid(resourceGroup().id, 'hunter-workbook')]",
+      "location": "[resourceGroup().location]",
+      "kind": "shared",
+      "tags": { "projeto": "hunter" },
+      "properties": {
+        "displayName": "[parameters('workbookName')]",
+        "category": "workbook",
+        "sourceId": "[parameters('appInsightsId')]",
+        "serializedData": "[string(variables('content'))]"
+      }
+    }
+  ],
+  "outputs": {
+    "workbookId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Insights/workbooks', guid(resourceGroup().id, 'hunter-workbook'))]"
+    }
+  }
+}
